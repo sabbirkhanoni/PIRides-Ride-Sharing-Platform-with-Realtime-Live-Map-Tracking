@@ -1,4 +1,6 @@
 import userModel from "../models/user.model.js";
+import BlacklistToken from "../utils/blacklistToken.utilsModel.js";
+
 
 export const userRegisterController = async(request,response) => {
     try {
@@ -76,9 +78,9 @@ export const userLoginController = async(request,response) => {
         }
 
         //check if user exists or not
-        const existingUser = await userModel.findOne({ email }).select('+password');
+        const user = await userModel.findOne({ email }).select('+password');
 
-        if(!existingUser) {
+        if(!user) {
             return response.status(400).json({
                 message: 'Invalid email or password',
                 error: true,
@@ -87,7 +89,7 @@ export const userLoginController = async(request,response) => {
         }
 
         //that means user exists, now compare password
-        const isPasswordMatch = await existingUser.comparePassword(password);
+        const isPasswordMatch = await user.comparePassword(password);
 
         if(!isPasswordMatch) {
             return response.status(400).json({
@@ -98,14 +100,16 @@ export const userLoginController = async(request,response) => {
         }
 
         //password matched, generate token
-        const token = existingUser.generateAuthToken();
+        const token = user.generateAuthToken();
+
+        response.cookie('token',token);
 
         return response.status(200).json({
             message: 'User logged in successfully',
             error: false,
             success: true,
             token,
-            data: existingUser
+            data: user
         });
 
     } catch (error) {
@@ -116,3 +120,40 @@ export const userLoginController = async(request,response) => {
         });
     }
 }
+
+export const userProfileController = async(request,response) => {
+    try {
+        response.status(200).json({
+            message : "User Profile Fetch Successfully",
+            error : false,
+            success : true,
+            data : request.user
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message: 'Internal server error',
+            error: true,
+            success: false
+        });
+    }
+}
+
+export const userLogoutController = async (request, response) => {
+    response.clearCookie('token');
+
+    const token = request.cookies.token || request?.header?.authorization;
+
+    if(token && token.startsWith('Bearer ')) {
+        token = token.split(' ')[1];
+    }
+
+    await BlacklistToken.create({ token });
+
+    return response.status(200).json({
+        message: 'User logged out successfully',
+        error: false,
+        success: true,
+    });
+}
+
+
