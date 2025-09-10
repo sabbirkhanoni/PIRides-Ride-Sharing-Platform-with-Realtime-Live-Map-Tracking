@@ -1,3 +1,164 @@
+# Rider Registration Endpoint Documentation
+
+## Endpoint
+
+`POST /riders/register`
+
+## Description
+
+Registers a new rider in the PIRides Ride Sharing Platform. This endpoint creates a new rider account with vehicle details and returns an authentication token upon successful registration.
+
+## Request Method
+
+`POST`
+
+## Request URL
+
+`/riders/register`
+
+## Request Body
+
+Send a JSON object with the following structure:
+
+```
+{
+  "fullname": {
+    "firstname": "<First Name>",
+    "lastname": "<Last Name>" // optional
+  },
+  "email": "<rider email>",
+  "password": "<rider password>",
+  "vehicle": {
+    "color": "<vehicle color>",
+    "plate": "<vehicle plate>",
+    "capacity": <vehicle capacity>,
+    "vehicleType": "car" | "bike" | "cng"
+  },
+  "location": {
+    "latitude": <latitude>, // optional
+    "longitude": <longitude> // optional
+  }
+}
+```
+
+### Required Fields
+
+- `fullname.firstname` (string, min 3 chars, required)
+- `email` (string, required, must be unique)
+- `password` (string, min 6 chars, required)
+- `vehicle.color` (string, min 3 chars, required)
+- `vehicle.plate` (string, min 3 chars, required, must be unique)
+- `vehicle.capacity` (number, min 1, required)
+- `vehicle.vehicleType` (string, one of: `car`, `bike`, `cng`, required)
+
+### Optional Fields
+
+- `fullname.lastname` (string, min 3 chars, optional)
+- `location.latitude` (number, optional)
+- `location.longitude` (number, optional)
+
+## Example Request
+
+```json
+{
+  "fullname": {
+    "firstname": "Alex",
+    "lastname": "Smith"
+  },
+  "email": "alexsmith@example.com",
+  "password": "riderPass123",
+  "vehicle": {
+    "color": "Red",
+    "plate": "XYZ1234",
+    "capacity": 4,
+    "vehicleType": "car"
+  },
+  "location": {
+    "latitude": 23.8103,
+    "longitude": 90.4125
+  }
+}
+```
+
+## Responses
+
+### Success (201 Created)
+
+```
+Status: 201
+Content-Type: application/json
+```
+
+```json
+{
+  "message": "Rider registered successfully",
+  "error": false,
+  "success": true,
+  "token": "<JWT token>",
+  "data": {
+    "_id": "<rider id>",
+    "fullname": {
+      "firstname": "Alex",
+      "lastname": "Smith"
+    },
+    "email": "alexsmith@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "XYZ1234",
+      "capacity": 4,
+      "vehicleType": "car"
+    },
+    "location": {
+      "latitude": 23.8103,
+      "longitude": 90.4125
+    },
+    "status": "inactive",
+    "socketId": null
+  }
+}
+```
+
+### Error Responses
+
+#### 400 Bad Request (Missing Fields)
+
+```
+Status: 400
+Content-Type: application/json
+```
+
+```json
+{
+  "message": "Please provide all required fields",
+  "error": true,
+  "success": false
+}
+```
+
+#### 400 Bad Request (Rider Already Exists)
+
+```
+Status: 400
+Content-Type: application/json
+```
+
+```json
+{
+  "message": "Rider already exists",
+  "error": true,
+  "success": false
+}
+```
+
+## Notes for Frontend Developers
+
+- On success, store the returned `token` for authentication in future requests.
+- Handle error messages and display them to the user as appropriate.
+- The `data` object in the response contains the newly created rider's information (except password).
+- The endpoint expects the `Content-Type: application/json` header.
+
+---
+
 # User Registration Endpoint Documentation
 
 ## Endpoint
