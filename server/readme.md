@@ -33,10 +33,6 @@ Send a JSON object with the following structure:
     "plate": "<vehicle plate>",
     "capacity": <vehicle capacity>,
     "vehicleType": "car" | "bike" | "cng"
-  },
-  "location": {
-    "latitude": <latitude>, // optional
-    "longitude": <longitude> // optional
   }
 }
 ```
@@ -72,10 +68,6 @@ Send a JSON object with the following structure:
     "plate": "XYZ1234",
     "capacity": 4,
     "vehicleType": "car"
-  },
-  "location": {
-    "latitude": 23.8103,
-    "longitude": 90.4125
   }
 }
 ```
@@ -155,7 +147,6 @@ Content-Type: application/json
 - On success, store the returned `token` for authentication in future requests.
 - Handle error messages and display them to the user as appropriate.
 - The `data` object in the response contains the newly created rider's information (except password).
-- The endpoint expects the `Content-Type: application/json` header.
 
 ---
 
