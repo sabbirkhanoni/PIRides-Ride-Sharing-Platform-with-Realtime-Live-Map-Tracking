@@ -238,8 +238,9 @@ Content-Type: application/json
 }
 ```
 
-## Notes for Frontend Developers
+## Notes for Frontend Devloping
 
 - On success, store the returned `token` for authentication in future requests.
 - Handle error messages and display them to the user as appropriate.
-- The `data` object in the response contains the logged-in user's information (except password).
+- The `data` object in the response contains the newly created user's information (except password).
+- The endpoint expects the `Content-Type: application/json` header.
