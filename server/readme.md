@@ -244,3 +244,117 @@ Content-Type: application/json
 - Handle error messages and display them to the user as appropriate.
 - The `data` object in the response contains the newly created user's information (except password).
 - The endpoint expects the `Content-Type: application/json` header.
+
+---
+
+# User Profile Endpoint Documentation
+
+## Endpoint
+
+`GET /users/profile`
+
+## Description
+
+Fetches the profile information of the currently authenticated user. Requires a valid JWT token in the request (as a cookie or in the Authorization header).
+
+## Request Method
+
+`GET`
+
+## Request URL
+
+`/users/profile`
+
+## Request Headers
+
+- `Authorization: Bearer <token>` (if not using cookies)
+
+## Example Request (with Bearer token)
+
+```
+GET /users/profile
+Authorization: Bearer <token>
+```
+
+## Success Response (200 OK)
+
+```
+Status: 200
+Content-Type: application/json
+```
+
+```json
+{
+  "message": "User Profile Fetch Successfully",
+  "error": false,
+  "success": true,
+  "data": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "_id": "<user id>",
+    "email": "johndoe@example.com"
+  }
+}
+```
+
+## Error Responses
+
+- 401 Unauthorized: If token is missing, invalid, or blacklisted.
+
+---
+
+# User Logout Endpoint Documentation
+
+## Endpoint
+
+`GET /users/logout`
+
+## Description
+
+Logs out the currently authenticated user by blacklisting their JWT token. After logout, the token cannot be used for further requests.
+
+## Request Method
+
+`GET`
+
+## Request URL
+
+`/users/logout`
+
+## Request Headers
+
+- `Authorization: Bearer <token>` (if not using cookies)
+
+## Example Request (with Bearer token)
+
+```
+GET /users/logout
+Authorization: Bearer <token>
+```
+
+## Success Response (200 OK)
+
+```
+Status: 200
+Content-Type: application/json
+```
+
+```json
+{
+  "message": "User logged out successfully",
+  "error": false,
+  "success": true
+}
+```
+
+## Error Responses
+
+- 401 Unauthorized: If token is missing, invalid, or already blacklisted.
+
+## Notes for Frontend Developers
+
+- Always send the JWT token as a cookie or in the `Authorization` header as `Bearer <token>`.
+- After logout, the token is blacklisted and cannot be used for any further requests.
+- Handle error messages and display them to the user as appropriate.
