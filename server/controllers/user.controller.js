@@ -1,6 +1,6 @@
 import userModel from "../models/user.model.js";
 
-export const userController = async(request,response) => {
+export const userRegisterController = async(request,response) => {
     try {
         const { fullname, email, password } = request.body;
 
@@ -61,4 +61,58 @@ export const userController = async(request,response) => {
         });
     }
 
+}
+
+export const userLoginController = async(request,response) => {
+    try {
+        const { email, password } = request.body;
+
+        if(!email || !password) {
+            return response.status(400).json({
+                message: 'Please provide all required fields',
+                error: true,
+                success: false
+            })
+        }
+
+        //check if user exists or not
+        const existingUser = await userModel.findOne({ email }).select('+password');
+
+        if(!existingUser) {
+            return response.status(400).json({
+                message: 'Invalid email or password',
+                error: true,
+                success: false
+            })
+        }
+
+        //that means user exists, now compare password
+        const isPasswordMatch = await existingUser.comparePassword(password);
+
+        if(!isPasswordMatch) {
+            return response.status(400).json({
+                message: 'Invalid Password',
+                error: true,
+                success: false
+            })
+        }
+
+        //password matched, generate token
+        const token = existingUser.generateAuthToken();
+
+        return response.status(200).json({
+            message: 'User logged in successfully',
+            error: false,
+            success: true,
+            token,
+            data: existingUser
+        });
+
+    } catch (error) {
+        return response.status(500).json({
+            message: 'Internal server error',
+            error: true,
+            success: false
+        });
+    }
 }

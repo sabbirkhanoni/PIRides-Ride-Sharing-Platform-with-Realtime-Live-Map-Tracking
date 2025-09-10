@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Password is required'],
-        select: false,
+        select: false, // Exclude password field by default when querying
     },
     socketId: {   // For real-time loacation tracking
         type: String,
