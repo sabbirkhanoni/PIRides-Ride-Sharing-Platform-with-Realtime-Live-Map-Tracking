@@ -1,5 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
+import toast from 'react-hot-toast';
+import Axios from '../utils/Axios';
+import SummaryAPI from '../Common/SummaryAPI';
+import AxiosToastError from '../utils/AxiosToastError';
+import { useNavigate } from 'react-router-dom';
+import { RiderContextData } from '../Context/RiderContext';
 
 const RiderLogin = () => {
   const [data, setData] = useState({
@@ -9,6 +15,12 @@ const RiderLogin = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
+
+  //context
+  const { rider, setRider } = useContext(RiderContextData);
+
+  //navigate
+  const navigate = useNavigate();
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -21,13 +33,39 @@ const RiderLogin = () => {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // After submit, reset the form
-    setData({
-      email: "",
-      password: "",
-    });
+
+    //send data to the backend
+    try{
+      const response = await Axios({
+        ...SummaryAPI.RiderLoginAPI,
+        data: {
+          email: data.email,
+          password: data.password,
+        }
+      });
+
+      if(response.data.error){
+        toast.error(response.data.message);
+      }
+
+      if(response.data.success){
+        toast.success(response.data.message);
+        setRider(response.data.rider);
+        localStorage.setItem('token', response.data.token);
+        navigate('/rider-home');
+      }
+
+    }catch (error) {
+      AxiosToastError(error);
+      setIsLoading(false);
+    }finally {
+      // After submit, reset the form
+      setData({
+        email: "",
+        password: "",
+      });
     setIsLoading(false);
+    }
   };
 
   return (
