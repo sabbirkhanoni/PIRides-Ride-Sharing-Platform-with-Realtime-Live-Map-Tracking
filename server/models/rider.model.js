@@ -52,10 +52,10 @@ const riderSchema = new mongoose.Schema({
             required: true,
             min: [1, 'Vehicle capacity must be at least 1']
         },
-        vehicleType: {
+        type: {
             type: String,
             required: true,
-            enum: ['car', 'bike', 'cng']
+            enum: ['Car', 'Bike', 'Auto']
         }
     },
     location: {

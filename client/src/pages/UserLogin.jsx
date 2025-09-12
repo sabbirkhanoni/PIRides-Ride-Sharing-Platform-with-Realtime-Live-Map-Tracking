@@ -1,7 +1,15 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { UserContextData } from '../Context/UserContext';
+import { useNavigate } from 'react-router-dom';
+import  toast from 'react-hot-toast';
+import Axios from '../utils/Axios';
+import SummaryAPI from '../Common/SummaryAPI';
+import AxiosToastError from '../utils/AxiosToastError';
 
 const UserLogin = () => {
+
+
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -9,6 +17,12 @@ const UserLogin = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
+
+  //context
+  const { user, setUser } = useContext(UserContextData);
+
+  //navigate
+  const navigate = useNavigate();
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +35,31 @@ const UserLogin = () => {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+    //send data to the backend
+    try {
+      const response = await Axios({
+        ...SummaryAPI.UserLoginAPI,
+        data: {
+          email: data.email,
+          password: data.password
+        }
+      });
+
+      if (response.data.error) {
+        toast.error(response.data.message);
+      }
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setUser(response.data.user);
+        localStorage.setItem('token', response.data.token);
+        navigate('/user-home');
+      }
+
+    } catch (error) {
+      AxiosToastError(error);
+    }
+
     // After submit, reset the form
     setData({
       email: "",

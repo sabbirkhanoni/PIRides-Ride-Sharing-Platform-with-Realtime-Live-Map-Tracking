@@ -27,7 +27,7 @@ export const authUserMiddleware = async (request, response, next) => {
         const isBlacklisted = await BlacklistToken.findOne({ token: token });
         if(isBlacklisted) {
             return response.status(401).json({
-                message: 'Unauthorized Access. Token is blacklisted.',
+                message: 'Your Token is blacklisted.',
                 error: true,
                 success: false
             });
@@ -80,7 +80,7 @@ export const authRiderMiddleware = async (request, response, next) => {
         const isBlacklisted = await BlacklistToken.findOne({ token: token });
         if(isBlacklisted) {
             return response.status(401).json({
-                message: 'Unauthorized Access in Rider. Token is blacklisted.',
+                message: 'Your Token is blacklisted.',
                 error: true,
                 success: false
             });

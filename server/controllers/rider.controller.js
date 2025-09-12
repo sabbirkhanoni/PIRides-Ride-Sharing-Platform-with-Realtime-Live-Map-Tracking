@@ -4,9 +4,9 @@ import BlacklistToken from "../utils/blacklistToken.utilsModel.js";
 export const riderRegisterController = async(request,response) => {
     const { fullname, email, password, vehicle , location } = request.body;
     const { firstname, lastname } = fullname;
-    const { color, plate, capacity, vehicleType } = vehicle;
+    const { color, plate, capacity, type } = vehicle;
 
-    if(!firstname || !email || !password || !color || !plate || !capacity || !vehicleType) {
+    if(!firstname || !email || !password || !color || !plate || !capacity || !type) {
         return response.status(400).json({
             message: 'Please provide all required fields',
             error: true,
@@ -39,7 +39,7 @@ export const riderRegisterController = async(request,response) => {
             color,
             plate,
             capacity,
-            vehicleType
+            type
         }
     });
 
