@@ -19,7 +19,7 @@ const UserHome = () => {
   const [allVehiclesInAreaPanel, setAllVehiclesInAreaPanel] = useState(false);
   const [confirmDetailsOfVehiclesPanel, setConfirmDetailsOfVehiclesPanel] = useState(false);
   const [userLookingForaRiderVehicleFound, setUserLookingForaRiderVehicleFound] = useState(false);
-  const [userGotRiderNowWaitingForRiderPickUp, setUserGotRiderNowWaitingForRiderPickUp] = useState(true);
+  const [userGotRiderNowWaitingForRiderPickUp, setUserGotRiderNowWaitingForRiderPickUp] = useState(false);
 
   const panelRef = useRef(null);
   const allVehiclesInAreaPanelRef = useRef(null);
