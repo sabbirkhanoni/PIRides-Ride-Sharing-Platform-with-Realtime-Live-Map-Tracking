@@ -11,6 +11,7 @@ import App from "../App";
 import UserURLProtectionLayer from "../utils/UserURLProtectioLayer";
 import RiderLogout from "../pages/RiderLogout";
 import RiderURLProtectionLayer from "../utils/RiderURLProtectionLayer";
+import UserRidingIntoVehicle from "../pages/UserRidingIntoVehicle";
 
 
 const router = createBrowserRouter([
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
                 path : "/rider-logout",
                 element : <RiderURLProtectionLayer><RiderLogout/></RiderURLProtectionLayer>
             },
+            {
+                path: "/user-riding",
+                element : <UserURLProtectionLayer><UserRidingIntoVehicle/></UserURLProtectionLayer>
+            }
         ]
     }
 ])
