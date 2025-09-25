@@ -81,36 +81,16 @@ const getDistanceAndTime = async (originAddress, destinationAddress) => {
       const distance = result.distance; // in meters
       const duration = result.time;     // in seconds
 
-      console.log('Distance (meters):', distance);
-      console.log('Duration (seconds):', duration);
-
-      // Convert to more readable units
-      const distanceInKm = (distance / 1000).toFixed(2);
       
-      // Format duration in days, hours, minutes, seconds
-      const formatDuration = (seconds) => {
-        const days = Math.floor(seconds / (24 * 3600));
-        const hours = Math.floor((seconds % (24 * 3600)) / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const remainingSeconds = seconds % 60;
-        
-        let durationString = '';
-        if (days > 0) durationString += `${days} day${days > 1 ? 's' : ''} `;
-        if (hours > 0) durationString += `${hours} hour${hours > 1 ? 's' : ''} `;
-        if (minutes > 0) durationString += `${minutes} min${minutes > 1 ? 's' : ''} `;
-        if (remainingSeconds > 0 || durationString === '') durationString += `${remainingSeconds} second${remainingSeconds > 1 ? 's' : ''}`;
-        
-        return durationString.trim();
-      };
 
-      const formattedDuration = formatDuration(duration);
+      const distanceInKm = distance / 1000; // Convert to kilometers
+      const durationInMin = duration / 60;   // Convert to minutes
 
-      return { 
-        distance: parseFloat(distanceInKm), // in km
-        duration: formattedDuration,        // formatted string
-        distanceInMeters: distance,         // raw meters
-        durationInSeconds: duration         // raw seconds
-      };
+      console.log('Distance (kilometers):', distanceInKm);
+      console.log('Duration (minutes):', durationInMin);
+
+      return { distanceInKm, durationInMin };
+
     } else {
       throw new Error("No distance/time data returned from route matrix API");
     }

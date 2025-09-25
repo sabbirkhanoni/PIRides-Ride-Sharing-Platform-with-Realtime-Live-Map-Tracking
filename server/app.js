@@ -8,6 +8,7 @@ import riderRouter from './routes/rider.routes.js';
 
 import cookieParser from 'cookie-parser';
 import mapsRouter from './routes/map.routes.js';
+import journeyRouter from './routes/journey.route.js';
 
 
 config();
@@ -29,5 +30,6 @@ app.use(cookieParser());
 app.use('/maps', mapsRouter);
 app.use('/users', userRouter);
 app.use('/riders', riderRouter);
+app.use('/journeys', journeyRouter);
 
 export default app;
