@@ -109,7 +109,7 @@ const getSuggestionsAddressService = async (input) => {
     throw new Error("Geoapify API key is not set in environment variables");
   }
 
-  const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&limit=10&apiKey=${apiKey}`;
+  const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&limit=5&apiKey=${apiKey}`;
   
   try {
     console.log('Autocomplete URL:', url);

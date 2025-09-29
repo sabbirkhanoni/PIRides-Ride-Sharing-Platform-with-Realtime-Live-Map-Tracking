@@ -33,7 +33,15 @@ const SummaryAPI = {
     RiderLogoutAPI : {
         url : '/riders/logout',
         method : 'get'
-    }
+    },
+    GetAddressSuggestionsAPI : {
+        url : '/maps/get-suggestions',
+        method : 'get'
+    },
+    GetJourneyDetailsAPI : {
+        url : '/journeys/get-ride-details',
+        method : 'get'
+    },
 }
 
 export default SummaryAPI;

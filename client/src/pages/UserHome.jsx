@@ -1,4 +1,4 @@
-import React, { use, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {useGSAP} from '@gsap/react'
 import gsap from 'gsap';
 import { RiArrowDownWideFill,RiArrowUpWideFill  } from "react-icons/ri";
@@ -7,19 +7,80 @@ import VehiclesInThatArea from '../Components/VehiclesInThatArea';
 import UserLookingForaRiderToVehicleFoundAndWaitingRiderToAcceptRequest from '../Components/UserLookingForaRiderToVehicleFoundAndWaitingRiderToAcceptRequest';
 import UserGotRiderNowWaitingForRiderPickUp from '../Components/UserGotRiderNowWaitingForRiderPickUp';
 import UserRideConfirmationDetailsOfVehicles from '../Components/UserRideConfirmationDetailsOfVehicles';
+import AxiosToastError from '../utils/AxiosToastError';
+import Axios from '../utils/Axios';
+import SummaryAPI from '../Common/SummaryAPI';
 
 const UserHome = () => {
 
-  const [pickupDestinationData, setPickupDestinationData] = React.useState({
-    pickup: "",
+  const [pickupDestinationData, setPickupDestinationData] = useState({
+    origin: "",
     destination: "",
   })
+
+
+   const handlePickupChange = async (e) => {
+        setPickupDestinationData({ ...pickupDestinationData, origin: e.target.value })
+        
+        if (e.target.value.length > 2) { // Only search after 3 characters
+            try {
+                const response = await Axios({
+                    ...SummaryAPI.GetAddressSuggestionsAPI,
+                    params: { input: e.target.value },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                console.log('Pickup suggestions response:', response.data);
+                // Extract the data array from the API response
+                setPickupSuggestions(response.data.data || [])
+            } catch (error) {
+                console.log(error)
+                AxiosToastError(error)
+            }
+        } else {
+            setPickupSuggestions([])
+        }
+    }
+
+
+    const handleDestinationChange = async (e) => {
+        setPickupDestinationData({ ...pickupDestinationData, destination: e.target.value })
+        
+        if (e.target.value.length > 2) { // Only search after 3 characters
+            try {
+                const response = await Axios({
+                    ...SummaryAPI.GetAddressSuggestionsAPI,
+                    params: { input: e.target.value },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                console.log('Destination suggestions response:', response.data);
+                // Extract the data array from the API response
+                setDestinationSuggestions(response.data.data || [])
+            } catch (error) {
+                console.log(error)
+                AxiosToastError(error)
+            }
+        } else {
+            setDestinationSuggestions([])
+        }
+    }
+
+
 
   const [locationPanelOpen, setLocationPanelOpen] = useState(false);
   const [allVehiclesInAreaPanel, setAllVehiclesInAreaPanel] = useState(false);
   const [confirmDetailsOfVehiclesPanel, setConfirmDetailsOfVehiclesPanel] = useState(false);
   const [userLookingForaRiderVehicleFound, setUserLookingForaRiderVehicleFound] = useState(false);
   const [userGotRiderNowWaitingForRiderPickUp, setUserGotRiderNowWaitingForRiderPickUp] = useState(false);
+
+
+  const [ pickupSuggestions, setPickupSuggestions ] = useState([])
+  const [ destinationSuggestions, setDestinationSuggestions ] = useState([])
+  const [ activeField, setActiveField ] = useState(null)
+  const [journeyDetails, setJourneyDetails] = useState({})
 
   const panelRef = useRef(null);
   const allVehiclesInAreaPanelRef = useRef(null);
@@ -31,7 +92,7 @@ const UserHome = () => {
   useGSAP(function(){
     if(locationPanelOpen){
       gsap.to(panelRef.current, {
-            height: '70%',
+            height: '60%',
             padding: 25,
             duration: 0.9, ease: 'power3.out',
             
@@ -114,18 +175,31 @@ const UserHome = () => {
   }, [userGotRiderNowWaitingForRiderPickUp]);
 
 
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
-    setPickupDestinationData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  }; 
-
   const handleOnSubmit = (e) => {
     e.preventDefault();
   }
 
+  async function findTripNow(){
+    setAllVehiclesInAreaPanel(true);
+    setLocationPanelOpen(false);
+
+    const response = await Axios({
+      ...SummaryAPI.GetJourneyDetailsAPI,
+      params: {
+        origin: pickupDestinationData.origin,
+        destination: pickupDestinationData.destination
+      },
+      headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+
+    if (response.data.success) {
+      setJourneyDetails(response.data.data);
+    } else {
+      console.error(response.data.message);
+    }
+  }
 
   return (
     <div className='relative h-screen overflow-hidden'>
@@ -138,37 +212,53 @@ const UserHome = () => {
           
         <div className='absolute flex flex-col justify-end h-screen top-0 w-full'>
           {/* Fields */}
-          <div className='h-[30%] p-5 bg-white relative'>
-            <h3 className='text-xl font-bold'>Find your Ride</h3>
+          <div className='h-[40%] p-5 bg-blue-50 relative'>
+            <h3 className='text-xl font-bold text-center'>Find your Ride</h3>
             <form onSubmit={handleOnSubmit}>
-                <div className='line bg-blue-500 absolute h-27 w-1 top-[25%] md:top-[25%] lg:top-[25%] left-5 rounded-full'></div>
                 <input
                 className='border border-gray-300 bg-blue-50 text-lg text-black p-2 px-3 rounded-md w-full mb-4 mt-2'
-                name="pickup"
-                value={pickupDestinationData.pickup}
-                onChange={handleOnChange}
-                onClick={() => setLocationPanelOpen(true)}
+                name="origin"
+                value={pickupDestinationData.origin}
+                onChange={handlePickupChange}
+                onFocus={() => {
+                  setActiveField('origin');
+                  setLocationPanelOpen(true);
+                }}
                 type="text"
-                placeholder='Enter pickup location' />
+                placeholder='Enter origin location' />
                 <input
                 className='border border-gray-300 bg-blue-50 text-lg text-black p-2 px-3 rounded-md w-full'
                 name="destination"
                 value={pickupDestinationData.destination}
-                onChange={handleOnChange}
-                onClick={() => setLocationPanelOpen(true)}
+                onChange={handleDestinationChange}
+                onFocus={() => {
+                  setActiveField('destination');
+                  setLocationPanelOpen(true);
+                }}
                 type="text"
-                placeholder='Enter drop location' />
-                <h2 className='absolute top-[88%] left-1/2 transform -translate-x-1/2 text-xl'
+                placeholder='Enter drop location'
+                />
+                
+            </form>
+            <button className=' bg-blue-500 text-white p-2 font-semibold rounded-full w-full mt-4'>
+                  Find Ride
+            </button>
+            <h2 className='absolute top-[88%] left-1/2 transform -translate-x-1/2 text-xl'
                 onClick={() => setLocationPanelOpen(!locationPanelOpen)}
                 >
                  {locationPanelOpen ? <RiArrowDownWideFill /> : <RiArrowUpWideFill/>}
-                </h2>
-            </form>
+            </h2>
           </div>
 
           {/* Suggestions */}
           <div ref={panelRef} className='h-[0] bg-white '>
-              <LocationSuggestionPanel setLocationPanelOpen={setLocationPanelOpen} setAllVehiclesInAreaPanel={setAllVehiclesInAreaPanel} />
+              <LocationSuggestionPanel
+              setLocationPanelOpen={setLocationPanelOpen}
+              setAllVehiclesInAreaPanel={setAllVehiclesInAreaPanel}
+              setPickupDestinationData={setPickupDestinationData}
+              suggestions={activeField === 'origin' ? pickupSuggestions : destinationSuggestions}
+              activeField={activeField}
+              />
           </div>
         </div>
 

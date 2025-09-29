@@ -1,26 +1,50 @@
 import React from 'react'
 import { IoLocationSharp } from "react-icons/io5";
 
-const LocationSuggestionPanel = ({ setLocationPanelOpen, setAllVehiclesInAreaPanel }) => {
-  const locations = [
-    "123 Main St, Springfield, A-101, San Francisco, IL New York, USA",
-    "456 Elm St, Springfield, A-102, San Francisco, IL New York, USA",
-    "789 Oak St, Springfield, A-103, San Francisco, IL New York, USA",
-    "101 Pine St, Springfield, A-104, San Francisco, IL New York, USA",
-    "202 Maple St, Springfield, A-105, San Francisco, IL New York, USA",
-    "303 Cedar St, Springfield, A-106, San Francisco, IL New York, USA",
-    "404 Birch St, Springfield, A-107, San Francisco, IL New York, USA",
-  ]
+const LocationSuggestionPanel = ({ setLocationPanelOpen, setAllVehiclesInAreaPanel,setPickupDestinationData, suggestions, activeField }) => {
+
+  
+  
+  const handleSuggestionClick = (suggestion) => {
+        const addressText = suggestion.address || suggestion.name || suggestion;
+        
+        if (activeField === 'origin') {
+            setPickupDestinationData((prev) => ({
+                ...prev,
+                origin: addressText
+            }));
+        } else if (activeField === 'destination') {
+            setPickupDestinationData((prev) => ({
+                ...prev,
+                destination: addressText
+            }));
+        }
+        
+        // Close the panel after selection
+        // setAllVehiclesInAreaPanel(true);
+        // setLocationPanelOpen(false);
+    }
 
   return (
      
     <div className='space-y-2 overflow-y-auto h-full border-gray-400'>
-      {locations.map((location, idx) => (
-        <div key={idx} onClick={() => { setAllVehiclesInAreaPanel(true); setLocationPanelOpen(false); }} className='flex cursor-pointer py-3 items-center gap-3 border-b-1 border-gray-400 rounded-lg'>
-          <h2 className='bg-gray-200 rounded-full py-2 px-2'><IoLocationSharp /></h2>
-          <h4 className='font-medium'>{location}</h4>
+      {suggestions && suggestions.length > 0 ? (
+        suggestions.map((location, idx) => (
+          <div key={idx} onClick={() => handleSuggestionClick(location)} className='flex cursor-pointer py-3 items-center gap-3 border-b-1 border-gray-400 rounded-lg'>
+            <h2 className='bg-gray-200 rounded-full py-2 px-2'><IoLocationSharp /></h2>
+            <div>
+              <h4 className='font-medium'>{location.address || location.name || location}</h4>
+              {location.city && location.country && (
+                <p className='text-sm text-gray-600'>{location.city}, {location.country}</p>
+              )}
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className='py-3 text-center text-gray-500'>
+          {activeField ? 'Type to search locations...' : 'No suggestions available'}
         </div>
-      ))}
+      )}
     </div>
   )
 }

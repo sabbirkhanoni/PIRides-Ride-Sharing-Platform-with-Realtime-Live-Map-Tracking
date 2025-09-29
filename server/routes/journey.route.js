@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { authUserMiddleware } from "../middlewares/auth.middleware.js";
-import  {journeyStartController} from "../controllers/journey.controller.js";
+import  {journeyStartController,getJourneyDetailsController} from "../controllers/journey.controller.js";
 
 
 const journeyRouter = Router();
 // Define journey-related routes here
 journeyRouter.post('/start',authUserMiddleware,journeyStartController);
+journeyRouter.get('/get-ride-details',authUserMiddleware,getJourneyDetailsController);
 
 export default journeyRouter;
