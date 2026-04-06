@@ -9,8 +9,8 @@ const RiderContext = ({children}) => {
     const [rider, setRider] = useState({
         email: "",
         fullname: {
-        firstname: "",
-        lastname: "",
+          firstname: "",
+          lastname: "",
         },
     });
 

@@ -3,32 +3,34 @@ import { Link } from 'react-router-dom';
 import { FaFacebook } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
+import { IoMenu } from "react-icons/io5";
 const StartingHome = () => {
   const [clicked, setClicked] = useState(null);
+  const [menuClicked, setMenuClicked] = useState(false);
 
   return (
-    <div className="h-screen w-screen bg-white">
-      <div className="p-4 bg-white flex justify-between items-center shadow-xl">
-        <div className=''>
+    <div className="h-screen w-full bg-white">
+      <div className="w-full bg-white shadow-xl">
+        <div className='flex justify-between items-center py-5'>
+        <div className='ml-5'>
           <img src="../src/assets/pirides.png" alt="logo" className="h-8 w-15" />
         </div>
 
-        <div className='mr-10'>
-          <ul className="flex space-x-6 relative font-semibold">
-            <li className='hover:bg-gray-200 px-3 py-2 rounded-full'>
+        <div className='mr-4'>
+          <ul className="flex space-x-2  relative font-semibold">
+            
+            <li className={`hover:bg-gray-200 px-3 py-2 rounded-full hidden md:block lg:block`}>
               <Link to={"/contact"}>Contact Us</Link>
             </li>
-            <li className='hover:bg-gray-200 px-3 py-2 rounded-full'>
-              <Link to={"/about"}>About Us</Link>
-            </li>
-            <li className='hover:bg-gray-200 px-3 py-2 rounded-full'>
+            <li className={`hover:bg-gray-200 px-3 py-2 rounded-full hidden md:block lg:block`}>
               <Link to={"/report"}>Report</Link>
             </li>
+
             <li
               className="relative"
               onClick={() => setClicked(clicked === 'login' ? null : 'login')}
             >
-              <button className="bg-blue-500 py-2  rounded-full px-5 text-white hover:bg-blue-600">
+              <button className="bg-blue-500 py-2  rounded-full px-5 text-white hover:bg-blue-600 text-sm lg:text-md">
                 Login
               </button>
 
@@ -50,7 +52,7 @@ const StartingHome = () => {
               className="relative"
               onClick={() => setClicked(clicked === 'register' ? null : 'register')}
             >
-              <button className="bg-black py-2 font-semibold rounded-full px-5 text-white hover:bg-blue-600">
+              <button className="bg-black  py-2 text-sm lg:text-md font-semibold rounded-full px-5 text-white hover:bg-blue-600">
                 Register
               </button>
 
@@ -67,8 +69,34 @@ const StartingHome = () => {
                 </div>
               )}
             </li>
+
+            <li>
+              <button
+              className='text-4xl lg:hidden md:hidden'
+              onClick={() => setMenuClicked(!menuClicked)}>
+                <IoMenu />
+              </button>
+
+              {menuClicked && (
+                <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-lg shadow-2xl border border-gray-200 z-10">
+                  <ul className="flex flex-col text-gray-700">
+                    <li className="hover:bg-gray-100 px-4 py-2 rounded-t-lg">
+                      <Link to="/about" onClick={() => setMenuClicked(false)}>About Us</Link>
+                    </li>
+                    <li className="hover:bg-gray-100 px-4 py-2">
+                      <Link to="/contact" onClick={() => setMenuClicked(false)}>Contact Us</Link>
+                    </li>
+                    <li className="hover:bg-gray-100 px-4 py-2 rounded-b-lg">
+                      <Link to="/report" onClick={() => setMenuClicked(false)}>Report</Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
+
+            </li>
           </ul>
         </div>
+      </div>
       </div>
 
     <div className='mt-10 items-center px-12'
@@ -208,7 +236,7 @@ const StartingHome = () => {
           <p className='mt-20 text-xs text-gray-200'>&copy; 2023 PI Rides. All rights reserved.</p>
         </div>
       </footer>
-
+    
     </div>
   );
 };

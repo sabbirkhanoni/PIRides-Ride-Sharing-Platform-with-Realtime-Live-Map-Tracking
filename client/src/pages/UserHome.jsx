@@ -10,65 +10,24 @@ import UserRideConfirmationDetailsOfVehicles from '../Components/UserRideConfirm
 import AxiosToastError from '../utils/AxiosToastError';
 import Axios from '../utils/Axios';
 import SummaryAPI from '../Common/SummaryAPI';
+import { SocketIOContext } from '../Context/SocketIOContext';
+import { useContext } from 'react';
+import {UserContextData} from '../Context/UserContext';
+import { useEffect } from 'react';
 
 const UserHome = () => {
+
+  const { socket } = useContext(SocketIOContext);
+  const { user } = useContext(UserContextData);
+
+  useEffect(() => {
+    socket.emit("join", {userType: "user", userId: user._id});
+  }, [user]);
 
   const [pickupDestinationData, setPickupDestinationData] = useState({
     origin: "",
     destination: "",
   })
-
-
-   const handlePickupChange = async (e) => {
-        setPickupDestinationData({ ...pickupDestinationData, origin: e.target.value })
-        
-        if (e.target.value.length > 2) { // Only search after 3 characters
-            try {
-                const response = await Axios({
-                    ...SummaryAPI.GetAddressSuggestionsAPI,
-                    params: { input: e.target.value },
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                console.log('Pickup suggestions response:', response.data);
-                // Extract the data array from the API response
-                setPickupSuggestions(response.data.data || [])
-            } catch (error) {
-                console.log(error)
-                AxiosToastError(error)
-            }
-        } else {
-            setPickupSuggestions([])
-        }
-    }
-
-
-    const handleDestinationChange = async (e) => {
-        setPickupDestinationData({ ...pickupDestinationData, destination: e.target.value })
-        
-        if (e.target.value.length > 2) { // Only search after 3 characters
-            try {
-                const response = await Axios({
-                    ...SummaryAPI.GetAddressSuggestionsAPI,
-                    params: { input: e.target.value },
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                console.log('Destination suggestions response:', response.data);
-                // Extract the data array from the API response
-                setDestinationSuggestions(response.data.data || [])
-            } catch (error) {
-                console.log(error)
-                AxiosToastError(error)
-            }
-        } else {
-            setDestinationSuggestions([])
-        }
-    }
-
-
 
   const [locationPanelOpen, setLocationPanelOpen] = useState(false);
   const [allVehiclesInAreaPanel, setAllVehiclesInAreaPanel] = useState(false);
@@ -174,6 +133,55 @@ const UserHome = () => {
         })
       }
   }, [userGotRiderNowWaitingForRiderPickUp]);
+
+  const handlePickupChange = async (e) => {
+      setPickupDestinationData({ ...pickupDestinationData, origin: e.target.value })
+      
+      if (e.target.value.length > 2) { // Only search after 3 characters
+          try {
+              const response = await Axios({
+                  ...SummaryAPI.GetAddressSuggestionsAPI,
+                  params: { input: e.target.value },
+                  headers: {
+                      Authorization: `Bearer ${localStorage.getItem('token')}`
+                  }
+              })
+              console.log('Pickup suggestions response:', response.data);
+              // Extract the data array from the API response
+              setPickupSuggestions(response.data.data || [])
+          } catch (error) {
+              console.log(error)
+              AxiosToastError(error)
+          }
+      } else {
+          setPickupSuggestions([])
+      }
+  }
+
+
+  const handleDestinationChange = async (e) => {
+      setPickupDestinationData({ ...pickupDestinationData, destination: e.target.value })
+      
+      if (e.target.value.length > 2) { // Only search after 3 characters
+          try {
+              const response = await Axios({
+                  ...SummaryAPI.GetAddressSuggestionsAPI,
+                  params: { input: e.target.value },
+                  headers: {
+                      Authorization: `Bearer ${localStorage.getItem('token')}`
+                  }
+              })
+              console.log('Destination suggestions response:', response.data);
+              // Extract the data array from the API response
+              setDestinationSuggestions(response.data.data || [])
+          } catch (error) {
+              console.log(error)
+              AxiosToastError(error)
+          }
+      } else {
+          setDestinationSuggestions([])
+      }
+  }
 
 
   const handleOnSubmit = (e) => {

@@ -11,7 +11,6 @@ const RiderHome = () => {
   const [riderPopUpForUserReqPanel, setRiderPopUpForUserReqPanel] = useState(true);
   const [riderConfirmUserReqPanel, setRiderConfirmUserReqPanel] = useState(false);
 
-
   //ref for rider pop up for user request panel
     const riderPopUpForUserReqPanelRef = useRef(null);
   //ref for rider confirm user request panel

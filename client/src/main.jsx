@@ -5,13 +5,17 @@ import { RouterProvider } from 'react-router-dom'
 import router from './routes/route.jsx'
 import UserContext from './Context/UserContext.jsx'
 import RiderContext from './Context/RiderContext.jsx'
+import SocketIOContext from './Context/SocketIOContext.jsx'
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RiderContext>
-      <UserContext>
-        <RouterProvider router={router} />
-      </UserContext>
-    </RiderContext>
+    <SocketIOContext>
+      <RiderContext>
+        <UserContext>
+          <RouterProvider router={router} />
+        </UserContext>
+      </RiderContext>
+    </SocketIOContext>
   </StrictMode>,
 )

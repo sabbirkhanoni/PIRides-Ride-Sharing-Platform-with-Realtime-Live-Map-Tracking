@@ -30,7 +30,7 @@ const UserURLProtectionLayer = ({children}) => {
     }
   }).then((response) => {
     if(response.data.success === true){
-        setUser(response.data.user);
+        setUser(response.data.data);
         setLoading(false);
     }
     }).catch((error) => {

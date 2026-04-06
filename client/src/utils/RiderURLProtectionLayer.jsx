@@ -31,7 +31,7 @@ useEffect(() => {
     }
   }).then((response) => {
     if(response.data.success === true){
-        setRider(response.data.rider);
+        setRider(response.data.data);
         setLoading(false);
     }
     }).catch((error) => {
