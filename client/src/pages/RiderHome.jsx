@@ -7,9 +7,49 @@ import {useGSAP} from '@gsap/react'
 import gsap from 'gsap';
 import RiderConfirmUserReq from '../Components/RiderConfirmUserReq';
 
+import { SocketIOContext } from '../Context/SocketIOContext';
+import { RiderContextData } from '../Context/RiderContext';
+import { useEffect , useContext } from 'react';
+
 const RiderHome = () => {
   const [riderPopUpForUserReqPanel, setRiderPopUpForUserReqPanel] = useState(true);
   const [riderConfirmUserReqPanel, setRiderConfirmUserReqPanel] = useState(false);
+
+  const { rider } = useContext(RiderContextData);
+  //socket io context
+  const {socket} = useContext(SocketIOContext);
+
+  useEffect(() => {
+    socket.emit('join',{
+      userId: rider._id,
+      userType: "rider"
+    })
+
+    const updateLocation = () => {
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(position => {
+          socket.emit('rider-location-update',
+            {
+              userId: rider._id,
+              location: {
+                ltd: position.coords.latitude,
+                lng: position.coords.longitude
+               }
+            }
+          )
+        })
+      } 
+    }
+
+    const locationInterval = setInterval(updateLocation, 10000); // Update location every 10 seconds
+    updateLocation();
+    return () => clearInterval(locationInterval); // Clean up the interval on component unmount
+  }, []);
+
+  socket.on('new-journey-request', (data) => {
+    console.log('New journey request received:', data);
+    //setRiderPopUpForUserReqPanel(true);
+  });
 
   //ref for rider pop up for user request panel
     const riderPopUpForUserReqPanelRef = useRef(null);

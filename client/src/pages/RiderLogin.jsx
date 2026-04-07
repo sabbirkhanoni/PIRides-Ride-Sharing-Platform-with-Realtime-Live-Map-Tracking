@@ -50,7 +50,7 @@ const RiderLogin = () => {
 
       if(response.data.success){
         toast.success(response.data.message);
-        setRider(response.data.rider);
+        setRider(response.data.rider); // Update the rider context with the logged-in rider's data
         localStorage.setItem('token', response.data.token);
         navigate('/rider-home');
       }

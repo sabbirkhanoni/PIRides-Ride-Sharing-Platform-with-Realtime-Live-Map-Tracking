@@ -1,8 +1,10 @@
 import calculateMoneyPayable from "../payment/utils/moneyCalculation.js";
 import { journeyStartService } from "../services/journey.services.js";
+import { getAddressCoordinate, getAllRiderInAreaRadiusService } from "../services/map.services.js";
+import { sendMessageToSocketId } from "../socketio.js";
 
 export const journeyStartController = async(request, response) => {
-    const { origin, destination, vehicleType } = request.body;
+    const {userId, origin, destination, vehicleType } = request.body;
 
     try {
 
@@ -29,13 +31,29 @@ export const journeyStartController = async(request, response) => {
             destination, 
             vehicleType
         });
+        
+        const pickupCoordinates = await getAddressCoordinate(origin);
+        const riderInRadius = await getAllRiderInAreaRadiusService(pickupCoordinates.lat, pickupCoordinates.lng, 2); // 2 km radius
 
-        return response.status(201).json({
+        journey.otp = "";
+
+        // Notify riders in radius about new journey request
+        if (riderInRadius && riderInRadius.length > 0) {
+            riderInRadius.map(rider => {
+                sendMessageToSocketId(rider.socketId, {
+                    event: 'new-journey-request',
+                    data: rider
+                });
+            });
+        }
+
+        return response.status(200).json({
             message: 'Journey started successfully',
             error: false,
             success: true,
             data: journey
         });
+
 
     } catch (error) {
         return response.status(500).json({

@@ -32,18 +32,36 @@ function initializeSocket(server){
             }
         })
 
+        //event
+        socket.on('rider-location-update', async (data) => {
+            const {userId, location} = data;
+
+            if(!location || !location.ltd || !location.lng){
+                return socket.emit('error', {
+                    message: 'Invalid location data'
+                })
+            }
+
+            await riderModel.findByIdAndUpdate(userId,{
+                location: {
+                    ltd: location.ltd,
+                    lng: location.lng
+                }
+            })
+        });
+
         socket.on('disconnect', () => {
             console.log('Client disconnected from Socket.io');
         });
     });
 }
 
-function sendMessageToSocketId(socketId, message){
-    if(io){ 
-        io.to(socketId).emit('message', message);
-    }else{
-        console.log("Socket.io not initialized.");
+    function sendMessageToSocketId(socketId, messageObject){
+        if(io){ 
+            io.to(socketId).emit(messageObject.event, messageObject.data);
+        }else{
+            console.log("Socket.io not initialized.");
+        }
     }
-}
 
 export {initializeSocket, sendMessageToSocketId};

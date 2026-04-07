@@ -21,7 +21,11 @@ const UserHome = () => {
   const { user } = useContext(UserContextData);
 
   useEffect(() => {
-    socket.emit("join", {userType: "user", userId: user._id});
+    socket.emit("join", 
+      {
+        userType: "user",
+        userId: user._id
+      });
   }, [user]);
 
   const [pickupDestinationData, setPickupDestinationData] = useState({

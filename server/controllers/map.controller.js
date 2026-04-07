@@ -1,5 +1,5 @@
 import {getAddressCoordinate,getDistanceAndTime,getSuggestionsAddressService  } from "../services/map.services.js";
-
+import riderModel from "../models/rider.model.js";
 
 export const getCoordinatesController = async (request, response) => {
       const { address } = request.query;
@@ -90,7 +90,7 @@ export const getSuggestionsAddressController = async (request, response) => {
             details: error.message
         });
     }
-}
+};
 
 
 

@@ -1,8 +1,9 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import riderModel from "../models/rider.model.js";
 dotenv.config();
 
-const getAddressCoordinate = async (address) => {
+export const getAddressCoordinate = async (address) => {
   const apiKey = process.env.GEOAPIFY_API_KEY;
   if (!apiKey) {
     throw new Error("Geoapify API key is not set in environment variables");
@@ -27,7 +28,7 @@ const getAddressCoordinate = async (address) => {
   }
 };
 
-const getDistanceAndTime = async (originAddress, destinationAddress) => {
+export const getDistanceAndTime = async (originAddress, destinationAddress) => {
   const apiKey = process.env.GEOAPIFY_API_KEY;
   if (!apiKey) {
     throw new Error("Geoapify API key is not set in environment variables");
@@ -103,7 +104,7 @@ const getDistanceAndTime = async (originAddress, destinationAddress) => {
   }
 };
 
-const getSuggestionsAddressService = async (input) => {
+export const getSuggestionsAddressService = async (input) => {
   const apiKey = process.env.GEOAPIFY_API_KEY;
   if (!apiKey) {
     throw new Error("Geoapify API key is not set in environment variables");
@@ -146,5 +147,14 @@ const getSuggestionsAddressService = async (input) => {
   }
 }
 
-export { getAddressCoordinate, getDistanceAndTime, getSuggestionsAddressService };
+export const getAllRiderInAreaRadiusService = async (ltd, lng, radius) => {
+  const riders = await riderModel.find({
+    location: {
+      $geoWithin: {
+        $centerSphere: [[lng, ltd], radius / 6378.1] // radius in radians (Earth's radius in km)
+      }
+    },
+  })
+}
+
 
