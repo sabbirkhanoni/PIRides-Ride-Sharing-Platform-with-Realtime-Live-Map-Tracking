@@ -1,54 +1,51 @@
-import React, {useContext, useEffect, useState} from 'react'
-import { useNavigate } from 'react-router-dom'
-import Axios from '../utils/Axios';
-import SummaryAPI from '../Common/SummaryAPI';
-import { RiderContextData } from '../Context/RiderContext';
-import { TrophySpin } from 'react-loading-indicators';
-import AxiosToastError from './AxiosToastError';
+import { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Axios from './Axios.js';
+import SummaryAPI from '../Common/SummaryAPI.js';
+import { RiderContextData } from '../Context/RiderContext.jsx';
+import AxiosToastError from './AxiosToastError.js';
 
 const RiderURLProtectionLayer = ({children}) => {
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { setRider } = useContext(RiderContextData);
 
+  useEffect(() => {
+    const fetchRiderProfile = async () => {
+      const token = localStorage.getItem('token');
 
-const token = localStorage.getItem('token');
-
-const [loading, setLoading] = useState(true);
-
-//context
-const { rider, setRider } = useContext(RiderContextData);
-
-const navigate = useNavigate();
-
-useEffect(() => {
       if (!token) {
-      navigate('/rider-login');
+        navigate('/rider-login');
+        return;
       }
-  }, [token]);
 
-  Axios({
-    ...SummaryAPI.RiderProfileAPI,
-    headers: {
-        Authorization: `Bearer ${token}`
-    }
-  }).then((response) => {
-    if(response.data.success === true){
-        setRider(response.data.data);
-        setLoading(false);
-    }
-    }).catch((error) => {
+      try {
+        const response = await Axios({
+          ...SummaryAPI.RiderProfileAPI,
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.data.success === true) {
+          setRider(response.data.data); // Set rider data once
+          setLoading(false);
+        }
+      } catch (error) {
         localStorage.removeItem('token');
         AxiosToastError(error);
         navigate('/rider-login');
-    });
+      }
+    };
 
-    if(loading){
-        return <div className='flex h-screen justify-center items-center'><TrophySpin color="#2972da" size="large" text="" textColor="" /></div>
-    }
+    fetchRiderProfile();
+  }, []); // Empty dependency array - runs only ONCE on mount
 
-    return (
-        <div>
-        {children}
-        </div>
-    )
-}
+  if (loading) {
+    return <div className='flex items-center justify-center h-screen'>Loading...</div>;
+  }
 
-export default RiderURLProtectionLayer
+  return children;
+};
+
+export default RiderURLProtectionLayer;

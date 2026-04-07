@@ -83,6 +83,7 @@ const RiderHome = () => {
   }
 }, [riderConfirmUserReqPanel]);
   
+//onClick={() => setAllVehiclesInAreaPanel(false)}
 
   return (
     <div className='h-screen w-screen'>
@@ -93,7 +94,7 @@ const RiderHome = () => {
           </Link>
         </div>
        <div className='h-[61%] w-full'>
-          <img onClick={() => setAllVehiclesInAreaPanel(false)} className='h-full w-full object-cover' src="../src/assets/mapDemo.png" alt="map"/>
+          <img  className='h-full w-full object-cover' src="../src/assets/mapDemo.png" alt="map"/>
        </div>
     
        <div className='h-[39%] p-2'>
