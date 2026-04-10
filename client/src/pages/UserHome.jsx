@@ -15,6 +15,7 @@ import { useContext } from 'react';
 import {UserContextData} from '../Context/UserContext';
 import { useEffect } from 'react';
 
+
 const UserHome = () => {
 
   const { socket } = useContext(SocketIOContext);
@@ -51,6 +52,10 @@ const UserHome = () => {
   const confirmDetailsOfVehiclesPanelRef = useRef(null);
   const userLookingForaRiderVehicleFoundRef = useRef(null);
   const userWaitingForRiderAcceptanceRef = useRef(null);
+
+  socket.on('journey-confirmed', journey => {
+    setUserGotRiderNowWaitingForRiderPickUp(true);
+  })
 
   {/* location suggestion panel animation */}
   useGSAP(function(){

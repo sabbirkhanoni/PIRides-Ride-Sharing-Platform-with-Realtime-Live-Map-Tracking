@@ -10,6 +10,10 @@ import RiderConfirmUserReq from '../Components/RiderConfirmUserReq';
 import { SocketIOContext } from '../Context/SocketIOContext';
 import { RiderContextData } from '../Context/RiderContext';
 import { useEffect , useContext } from 'react';
+import Axios from '../utils/Axios';
+import AxiosToastError from '../utils/AxiosToastError';
+import toast from 'react-hot-toast';
+import SummaryAPI from '../Common/SummaryAPI';
 
 const RiderHome = () => {
   const [riderPopUpForUserReqPanel, setRiderPopUpForUserReqPanel] = useState(false);
@@ -21,7 +25,7 @@ const RiderHome = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [socketConnected, setSocketConnected] = useState(false);
 
-   console.log("userdetails", userDetails);
+  
   // First useEffect: Set up socket connection listeners
   useEffect(() => {
     if (!socket) {
@@ -140,6 +144,22 @@ const RiderHome = () => {
     };
   }, [socket]);
 
+
+  const confirmJourneyByRider = async () => {
+     try {
+        const response = await Axios({
+        ...SummaryAPI.confrimJourneyByRider,
+      })
+
+      if(response.success){
+        toast.success(response.message);
+      }
+     } catch (error){
+      console.log(error);
+      AxiosToastError(error);
+     }
+  }
+
  
 
   //ref for rider pop up for user request panel
@@ -196,7 +216,12 @@ const RiderHome = () => {
 
        {/*Rider Popup for User Request*/}
         <div ref={riderPopUpForUserReqPanelRef} className='fixed z-10 w-full bg-white px-3 py-5 bottom-0 pt-4 translate-y-full'>
-          <RiderPopUpForUserRequest setRiderPopUpForUserReqPanel={setRiderPopUpForUserReqPanel} setRiderConfirmUserReqPanel={setRiderConfirmUserReqPanel} userDetails={userDetails} />
+          <RiderPopUpForUserRequest
+          setRiderPopUpForUserReqPanel={setRiderPopUpForUserReqPanel}
+          setRiderConfirmUserReqPanel={setRiderConfirmUserReqPanel}
+          userDetails={userDetails} 
+          confirmJourneyByRider={confirmJourneyByRider}
+          />
         </div>
 
 

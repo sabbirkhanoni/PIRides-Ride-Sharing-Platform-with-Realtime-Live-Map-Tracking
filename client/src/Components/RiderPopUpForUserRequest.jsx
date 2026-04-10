@@ -4,9 +4,20 @@ import { FaMoneyBillWave } from "react-icons/fa";
 import { MdLocationSearching } from "react-icons/md";
 import { RiArrowDownWideFill } from "react-icons/ri";
 
-const RiderPopUpForUserRequest = ({ setRiderPopUpForUserReqPanel, setRiderConfirmUserReqPanel, userDetails}) => {
+const RiderPopUpForUserRequest = ({ setRiderPopUpForUserReqPanel, setRiderConfirmUserReqPanel, userDetails, confirmJourneyByRider }) => {
 
-console.log("userDetailsIn log", userDetails.user.fullname.firstname);
+  const userDetailsCopy = userDetails || {
+    user: {
+      fullname: {
+        firstname: 'Loading...',
+        lastname: 'Loading...'
+      },
+      origin: 'Loading...',
+      destination: 'Loading...',
+      moneyPayable: 0
+    }
+  }
+
   return (
     <div>
             <h4
@@ -23,11 +34,11 @@ console.log("userDetailsIn log", userDetails.user.fullname.firstname);
                 <div className='w-full flex items-center justify-between p-2 border-b-1 border-gray-300 mb-2'>
                     <div className='flex flex-col items-center gap-1'>
                         <img className='h-13 rounded-full object-cover  ' src="../src/assets/rider.png" alt="user"/>
-                        <h4 className='font-semibold text-black text-sm'>{userDetails.user.fullname.firstname + " " + userDetails.user.fullname.lastname}</h4>
+                        <h4 className='font-semibold text-black text-sm'>{userDetailsCopy.user.fullname.firstname + " " + userDetailsCopy.user.fullname.lastname}</h4>
                     </div>
                     <div>
                         <h3 className='font-semibold'>{3.4} KM</h3>
-                        <h5 className='text-md font-bold flex items-center gap-1'><FaMoneyBillWave />{userDetails.moneyPayable} BDT</h5>
+                        <h5 className='text-md font-bold flex items-center gap-1'><FaMoneyBillWave />{userDetailsCopy.moneyPayable} BDT</h5>
                     </div>
                 </div>
     
@@ -36,7 +47,7 @@ console.log("userDetailsIn log", userDetails.user.fullname.firstname);
                         <h2 className='text-lg bg-gray-100 rounded-full p-1'><IoLocationSharp /></h2>
                         <div>
                             <h3 className='font-bold'>Origin</h3>
-                            <h5 className=' text-sm'>{userDetails.origin || 'Loading pickup location...'}</h5>
+                            <h5 className=' text-sm'>{userDetailsCopy.origin || 'Loading pickup location...'}</h5>
                         </div>
                     </div>
     
@@ -45,7 +56,7 @@ console.log("userDetailsIn log", userDetails.user.fullname.firstname);
                         <h2 className='text-lg bg-gray-100 rounded-full p-1'><MdLocationSearching /></h2>
                         <div>
                             <h3 className='font-bold'>Destination</h3>
-                            <h5 className='text-sm'>{userDetails.destination || 'Loading destination...'}</h5>
+                            <h5 className='text-sm'>{userDetailsCopy.destination || 'Loading destination...'}</h5>
                         </div>
                     </div>
     
@@ -54,7 +65,11 @@ console.log("userDetailsIn log", userDetails.user.fullname.firstname);
             </div>
             <div className='flex items-center gap-2 justify-between'>
                 <button
-                    onClick={() => (setRiderPopUpForUserReqPanel(false), setRiderConfirmUserReqPanel(true))}
+                    onClick={() => {
+                        confirmJourneyByRider();
+                        setRiderPopUpForUserReqPanel(false);
+                        setRiderConfirmUserReqPanel(true);
+                    }}
                     className='px-12 mt-3 bg-blue-500 text-white font-semibold py-2 rounded-full'
                     >Accept
                 </button>

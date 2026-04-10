@@ -45,6 +45,10 @@ const SummaryAPI = {
     startJourneyNowAPI : {
         url : '/journeys/start',
         method : 'post'
+    },
+    confrimJourneyByRider : {
+        url : '/journeys/confirm-by-rider',
+        method : 'post'
     }
 }
 

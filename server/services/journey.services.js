@@ -28,3 +28,25 @@ export const journeyStartService = async (
 
     return journey;
 };
+
+export const confirmJourneyService = async ({journeyId, riderId}) => {
+    if(!journeyId || !riderId) {
+        throw new Error("Journey ID and Rider ID are required to confirm a journey");
+    }
+
+    await riderModel.findOneAndUpdate({ _id: riderId },
+         { 
+            status: "accepted",
+            rider: riderId
+          } 
+        );
+    const journey = await journeyModel.findOne({
+        _id: journeyId,
+    }).populate('user');
+
+    if(!journey) {
+        throw new Error("Journey not found");
+    }
+
+    return journey;
+}

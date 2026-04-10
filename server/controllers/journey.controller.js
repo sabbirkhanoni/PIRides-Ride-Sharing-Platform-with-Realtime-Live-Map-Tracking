@@ -117,6 +117,33 @@ export const getJourneyDetailsController = async (request, response) => {
     }
 };
 
+export const confirmJourneyByRiderController = async (request,response) => {
+    const { journeyId } = request.body;
+    try {
+        const journey = await confirmJourneyService(journeyId, request.rider._id);
+
+        sendMessageToSocketId(journey.user.socketId, {
+            event: 'journey-confirmed',
+            data: journey
+        })
+
+        if(journey) {
+            return response.status(200).json({
+                message: 'Journey Confirmed By a Rider',
+                error:false,
+                success: true,
+                data: journey
+            })
+        }
+    } catch (error) {
+        return response.status(500).json({
+            message: 'Internal Server Error',
+            error: true,
+            success: false,
+        })
+    }
+}
+
 
 
 
