@@ -5,8 +5,7 @@ import generateOTP from "../utils/journeyOTP.js";
 
 
 export const journeyStartService = async (
-    {user, origin, destination, vehicleType}
-) => {
+    {user, origin, destination, vehicleType}) => {
 
     if(!user || !origin || !destination || !vehicleType) {
         throw new Error("All fields are required to start a journey Services");
@@ -24,6 +23,8 @@ export const journeyStartService = async (
         otp: generateOTP(6),
         moneyPayable: moneyPayable[vehicleType]
     });
+
+    await journey.save();
 
     return journey;
 };

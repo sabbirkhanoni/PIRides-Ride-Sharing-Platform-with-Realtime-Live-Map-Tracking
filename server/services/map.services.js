@@ -147,14 +147,24 @@ export const getSuggestionsAddressService = async (input) => {
   }
 }
 
-export const getAllRiderInAreaRadiusService = async (ltd, lng, radius) => {
-  const riders = await riderModel.find({
-    location: {
-      $geoWithin: {
-        $centerSphere: [[lng, ltd], radius / 6378.1] // radius in radians (Earth's radius in km)
+export const getAllRiderInAreaRadiusService = async (lat, lng, radiusInKm) => {
+  try {
+    const radiusInRadians = radiusInKm / 6378.1; // Earth's radius in km
+    
+    const riders = await riderModel.find({
+      location: {
+        $geoWithin: {
+          $centerSphere: [[lng, lat], radiusInRadians] // GeoJSON format: [lng, lat]
+        }
       }
-    },
-  })
+    });
+
+    console.log(`Found ${riders.length} riders within ${radiusInKm}km radius`);
+    return riders;
+  } catch (error) {
+    console.error('Error finding riders in radius:', error.message);
+    return [];
+  }
 }
 
 

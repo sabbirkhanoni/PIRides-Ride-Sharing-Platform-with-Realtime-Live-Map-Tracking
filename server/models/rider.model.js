@@ -66,8 +66,10 @@ const riderSchema = new mongoose.Schema({
             type: Number,
         }
     }
-})
+}, { timestamps: true })
 
+// Create geospatial index for location-based queries
+riderSchema.index({ 'location': '2dsphere' });
 
 //Now Methods
 

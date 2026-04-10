@@ -33,19 +33,31 @@ export const journeyStartController = async(request, response) => {
         });
         
         const pickupCoordinates = await getAddressCoordinate(origin);
+        console.log('Pickup coordinates:', pickupCoordinates);
+        
         const riderInRadius = await getAllRiderInAreaRadiusService(pickupCoordinates.lat, pickupCoordinates.lng, 2); // 2 km radius
+        console.log(`Found ${riderInRadius.length} riders in radius for journey ${journey._id}`);
 
         journey.otp = "";
 
         // Notify riders in radius about new journey request
-        if (riderInRadius && riderInRadius.length > 0) {
-            riderInRadius.map(rider => {
-                sendMessageToSocketId(rider.socketId, {
-                    event: 'new-journey-request',
-                    data: rider
-                });
+            riderInRadius.forEach(rider => {
+                console.log(`Sending journey request to rider ${rider._id} with socketId: ${rider.socketId}`);
+                if (rider.socketId) {
+                    sendMessageToSocketId(rider.socketId, {
+                        event: 'new-journey-request',
+                        data: {
+                            journeyId: journey._id,
+                            userId: request.user._id,
+                            origin: journey.origin,
+                            destination: journey.destination,
+                            moneyPayable: journey.moneyPayable,
+                            vehicleType: vehicleType,
+                            otp: journey.otp
+                        }
+                    });
+                }
             });
-        }
 
         return response.status(200).json({
             message: 'Journey started successfully',
