@@ -21,12 +21,15 @@ const RiderHome = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [socketConnected, setSocketConnected] = useState(false);
 
+   console.log("userdetails", userDetails);
   // First useEffect: Set up socket connection listeners
   useEffect(() => {
     if (!socket) {
       console.error('❌ Socket not available');
       return;
     }
+
+   
 
     console.log('🔌 Socket object:', socket);
     console.log('🔌 Socket connected:', socket.connected);
@@ -60,6 +63,8 @@ const RiderHome = () => {
       console.warn('⏳ Waiting for socket and rider data... Socket:', !!socket, 'Rider:', rider._id, 'Connected:', socketConnected);
       return;
     }
+
+    
 
     socket.emit('join', {
       userId: rider._id,

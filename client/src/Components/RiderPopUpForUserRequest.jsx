@@ -5,15 +5,8 @@ import { MdLocationSearching } from "react-icons/md";
 import { RiArrowDownWideFill } from "react-icons/ri";
 
 const RiderPopUpForUserRequest = ({ setRiderPopUpForUserReqPanel, setRiderConfirmUserReqPanel, userDetails}) => {
-  // Default values if userDetails is not provided
-  const journeyData = userDetails || {
-    userId: 'N/A',
-    origin: 'Loading...',
-    destination: 'Loading...',
-    moneyPayable: 0,
-    vehicleType: 'N/A'
-  };
 
+console.log("userDetailsIn log", userDetails.user.fullname.firstname);
   return (
     <div>
             <h4
@@ -30,11 +23,11 @@ const RiderPopUpForUserRequest = ({ setRiderPopUpForUserReqPanel, setRiderConfir
                 <div className='w-full flex items-center justify-between p-2 border-b-1 border-gray-300 mb-2'>
                     <div className='flex flex-col items-center gap-1'>
                         <img className='h-13 rounded-full object-cover  ' src="../src/assets/rider.png" alt="user"/>
-                        <h4 className='font-semibold text-black text-sm'>{journeyData.userId?.substring(0, 8) || 'User'}</h4>
+                        <h4 className='font-semibold text-black text-sm'>{userDetails.user.fullname.firstname + " " + userDetails.user.fullname.lastname}</h4>
                     </div>
                     <div>
-                        <h3 className='font-semibold'>{journeyData.distance || 'N/A'} KM</h3>
-                        <h5 className='text-md font-bold flex items-center gap-1'><FaMoneyBillWave /> {journeyData.moneyPayable || 0} BDT</h5>
+                        <h3 className='font-semibold'>{3.4} KM</h3>
+                        <h5 className='text-md font-bold flex items-center gap-1'><FaMoneyBillWave />{userDetails.moneyPayable} BDT</h5>
                     </div>
                 </div>
     
@@ -42,8 +35,8 @@ const RiderPopUpForUserRequest = ({ setRiderPopUpForUserReqPanel, setRiderConfir
                     <div className='flex items-center gap-3 border-gray-300 border-b-1 p-2 shadow-sm'>
                         <h2 className='text-lg bg-gray-100 rounded-full p-1'><IoLocationSharp /></h2>
                         <div>
-                            <h3 className='font-bold'>{journeyData.vehicleType || 'Vehicle'}</h3>
-                            <h5 className=' text-sm'>{journeyData.origin || 'Loading pickup location...'}</h5>
+                            <h3 className='font-bold'>Origin</h3>
+                            <h5 className=' text-sm'>{userDetails.origin || 'Loading pickup location...'}</h5>
                         </div>
                     </div>
     
@@ -52,7 +45,7 @@ const RiderPopUpForUserRequest = ({ setRiderPopUpForUserReqPanel, setRiderConfir
                         <h2 className='text-lg bg-gray-100 rounded-full p-1'><MdLocationSearching /></h2>
                         <div>
                             <h3 className='font-bold'>Destination</h3>
-                            <h5 className='text-sm'>{journeyData.destination || 'Loading destination...'}</h5>
+                            <h5 className='text-sm'>{userDetails.destination || 'Loading destination...'}</h5>
                         </div>
                     </div>
     

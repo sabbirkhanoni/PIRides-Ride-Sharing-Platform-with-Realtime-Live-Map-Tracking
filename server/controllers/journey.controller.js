@@ -1,3 +1,5 @@
+import journeyModel from "../models/journey.model.js";
+import riderModel from "../models/rider.model.js";
 import calculateMoneyPayable from "../payment/utils/moneyCalculation.js";
 import { journeyStartService } from "../services/journey.services.js";
 import { getAddressCoordinate, getAllRiderInAreaRadiusService } from "../services/map.services.js";
@@ -40,6 +42,8 @@ export const journeyStartController = async(request, response) => {
 
         journey.otp = "";
 
+        const journeyData = await journeyModel.findById(journey._id).populate('user');
+
         // Notify riders in radius about new journey request
         if (riderInRadius && riderInRadius.length > 0) {
             riderInRadius.forEach(rider => {
@@ -47,15 +51,7 @@ export const journeyStartController = async(request, response) => {
                 if (rider.socketId) {
                     sendMessageToSocketId(rider.socketId, {
                         event: 'new-journey-request',
-                        data: {
-                            journeyId: journey._id,
-                            userId: request.user._id,
-                            origin: journey.origin,
-                            destination: journey.destination,
-                            moneyPayable: journey.moneyPayable,
-                            vehicleType: vehicleType,
-                            otp: journey.otp
-                        }
+                        data: journeyData
                     });
                 } else {
                     console.warn(`⚠️  Rider ${rider._id} has no socketId`);
