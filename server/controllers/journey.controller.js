@@ -33,16 +33,17 @@ export const journeyStartController = async(request, response) => {
         });
         
         const pickupCoordinates = await getAddressCoordinate(origin);
-        console.log('Pickup coordinates:', pickupCoordinates);
+        console.log('📍 Pickup coordinates:', pickupCoordinates);
         
-        const riderInRadius = await getAllRiderInAreaRadiusService(pickupCoordinates.lat, pickupCoordinates.lng, 2); // 2 km radius
-        console.log(`Found ${riderInRadius.length} riders in radius for journey ${journey._id}`);
+        const riderInRadius = await getAllRiderInAreaRadiusService(pickupCoordinates.lat, pickupCoordinates.lng, 10); // 10 km radius
+        console.log(`\n🔍 Journey ${journey._id} - Found ${riderInRadius.length} riders in radius\n`);
 
         journey.otp = "";
 
         // Notify riders in radius about new journey request
+        if (riderInRadius && riderInRadius.length > 0) {
             riderInRadius.forEach(rider => {
-                console.log(`Sending journey request to rider ${rider._id} with socketId: ${rider.socketId}`);
+                console.log(`📤 Sending journey request to rider ${rider._id} with socketId: ${rider.socketId}`);
                 if (rider.socketId) {
                     sendMessageToSocketId(rider.socketId, {
                         event: 'new-journey-request',
@@ -56,8 +57,13 @@ export const journeyStartController = async(request, response) => {
                             otp: journey.otp
                         }
                     });
+                } else {
+                    console.warn(`⚠️  Rider ${rider._id} has no socketId`);
                 }
             });
+        } else {
+            console.warn('⚠️  No riders found in radius to notify');
+        }
 
         return response.status(200).json({
             message: 'Journey started successfully',

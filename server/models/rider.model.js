@@ -69,9 +69,13 @@ const riderSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 // Create geospatial index for location-based queries
-riderSchema.index({ 'location': '2dsphere' });
+// The index should be on both fields together for $geoWithin to work
+riderSchema.index({ 'location.ltd': 1, 'location.lng': 1 });
 
-//Now Methods
+// Also create 2dsphere index on coordinates stored as array [lng, lat]
+// But since we're using object notation, we need to use the compound index above
+
+//Now Methods✅ Found 1 riders within 10km radius
 
 // generate token
 riderSchema.methods.generateAuthToken = function() {

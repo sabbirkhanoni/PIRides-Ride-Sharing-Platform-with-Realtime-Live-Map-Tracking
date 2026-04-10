@@ -149,20 +149,42 @@ export const getSuggestionsAddressService = async (input) => {
 
 export const getAllRiderInAreaRadiusService = async (lat, lng, radiusInKm) => {
   try {
-    const radiusInRadians = radiusInKm / 6378.1; // Earth's radius in km
-    
-    const riders = await riderModel.find({
-      location: {
-        $geoWithin: {
-          $centerSphere: [[lng, lat], radiusInRadians] // GeoJSON format: [lng, lat]
-        }
-      }
+    console.log(`🔍 Searching for riders with location query:`, {
+      lat: lat,
+      lng: lng,
+      radiusInKm: radiusInKm
     });
 
-    console.log(`Found ${riders.length} riders within ${radiusInKm}km radius`);
+    // Calculate the latitude and longitude range (approximate)
+    // 1 degree of latitude ≈ 111 km
+    // 1 degree of longitude ≈ 111 km * cos(latitude)
+    
+    const latRange = radiusInKm / 111;
+    const lngRange = radiusInKm / (111 * Math.cos(lat * Math.PI / 180));
+
+    console.log(`📐 Search range - latRange: ±${latRange.toFixed(4)}, lngRange: ±${lngRange.toFixed(4)}`);
+
+    const riders = await riderModel.find({
+      $and: [
+        { 'location.ltd': { $gte: lat - latRange, $lte: lat + latRange } },
+        { 'location.lng': { $gte: lng - lngRange, $lte: lng + lngRange } }
+      ]
+    });
+
+    console.log(`✅ Found ${riders.length} riders within ${radiusInKm}km radius`);
+    if (riders.length > 0) {
+      riders.forEach(rider => {
+        console.log(`  - Rider ID: ${rider._id}`);
+        console.log(`    Location: lat=${rider.location.ltd}, lng=${rider.location.lng}`);
+        console.log(`    SocketId: ${rider.socketId ? '✓ Present' : '✗ Missing'}`);
+      });
+    } else {
+      console.warn(`⚠️  No riders found in the specified radius`);
+    }
     return riders;
   } catch (error) {
-    console.error('Error finding riders in radius:', error.message);
+    console.error('❌ Error finding riders in radius:', error.message);
+    console.error('Stack trace:', error);
     return [];
   }
 }
