@@ -36,7 +36,7 @@ const handleSubmit = (e) => {
 
             <div className='w-full flex items-center justify-between p-2 border-b-1 border-gray-300 mb-2'>
                 <div className='flex flex-col items-center gap-1'>
-                    <img className='h-13 rounded-full object-cover  ' src="../src/assets/khan.avif" alt="user"/>
+                    <img className='h-13 rounded-full object-cover  ' src="/khan.avif" alt="user"/>
                     <h4 className='font-semibold text-black'>Rider Name</h4>
                 </div>
                 <div>

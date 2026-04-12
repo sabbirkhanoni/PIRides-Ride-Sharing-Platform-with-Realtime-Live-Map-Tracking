@@ -75,7 +75,7 @@ const RiderLogin = () => {
         <div className='text-center'>
           <div className='flex items-center justify-center'>
             <div className='w-25 h-15 bg-white rounded-lg flex items-center justify-center'>
-              <img className='w-full h-full object-contain' src="../src/assets/rider.png" alt="logo"/>
+              <img className='w-full h-full object-contain' src="/rider.png" alt="logo"/>
             </div>
           </div>
           <h1 className='text-2xl font-bold text-gray-900 mb-2'>Rider</h1>

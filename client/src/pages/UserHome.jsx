@@ -244,10 +244,10 @@ async function startJourneyNow(){
 
   return (
     <div className='relative h-screen overflow-hidden'>
-       <img className='w-15 absolute left-5 top-5' src="../src/assets/pirides.png" alt="logo"/>
+       <img className='w-15 absolute left-5 top-5' src="/pirides.png" alt="logo"/>
 
        <div className='h-screen w-screen'>
-          <img onClick={() => setAllVehiclesInAreaPanel(false)} className='h-full w-full object-cover' src="../src/assets/mapDemo.png" alt="map"/>
+          <img onClick={() => setAllVehiclesInAreaPanel(false)} className='h-full w-full object-cover' src="/mapDemo.png" alt="map"/>
        </div>
 
           

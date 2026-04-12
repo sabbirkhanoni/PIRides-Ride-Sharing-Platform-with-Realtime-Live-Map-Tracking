@@ -29,7 +29,7 @@ const UserRideConfirmationDetailsOfVehicles = ({
       <div className="flex justify-center items-center flex-col">
         <img
           className="h-30"
-          src={`../src/assets/${selectVehicleType}.jpeg`}
+          src={`/${selectVehicleType}.jpeg`}
           alt="Vehicle"
         />
 

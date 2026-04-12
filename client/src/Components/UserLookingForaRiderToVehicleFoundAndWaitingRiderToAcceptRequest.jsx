@@ -23,7 +23,7 @@ const UserLookingForaRiderToVehicleFoundAndWaitingRiderToAcceptRequest = ({
             </div>
     
             <div className='flex justify-center items-center flex-col'>
-                <img className='h-30' src={`../src/assets/${selectVehicleType}.jpeg`} alt="vehicle"/>
+                <img className='h-30' src={`/${selectVehicleType}.jpeg`} alt="vehicle"/>
 
                 <div className='w-full space-y-2'>
                     <div className='flex items-center gap-3 border-gray-300 border-b-1 p-2 shadow-sm'>

@@ -33,7 +33,7 @@ const RiderPopUpForUserRequest = ({ setRiderPopUpForUserReqPanel, setRiderConfir
 
                 <div className='w-full flex items-center justify-between p-2 border-b-1 border-gray-300 mb-2'>
                     <div className='flex flex-col items-center gap-1'>
-                        <img className='h-13 rounded-full object-cover  ' src="../src/assets/rider.png" alt="user"/>
+                        <img className='h-13 rounded-full object-cover  ' src="/rider.png" alt="user"/>
                         <h4 className='font-semibold text-black text-sm'>{userDetailsCopy.user.fullname.firstname + " " + userDetailsCopy.user.fullname.lastname}</h4>
                     </div>
                     <div>

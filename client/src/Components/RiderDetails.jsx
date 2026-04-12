@@ -12,7 +12,7 @@ const RiderDetails = () => {
   return (
     <div>
       <div className='flex items-center justify-between p-1 border-b-1 border-gray-300 mb-2 py-2'>
-            <img className='h-15' src="../src/assets/car.webp" alt="car"/>
+            <img className='h-15' src="/car.webp" alt="car"/>
             <div>
                 <h3 className='font-semibold text-xl capitalize '>{rider?.fullname.firstname + " " + rider?.fullname.lastname || 'Unknown User'}</h3>
                 <h5 className='font-semibold text-md'>ABC-129A</h5>

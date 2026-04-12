@@ -11,7 +11,7 @@ const UserRidingIntoVehicle = () => {
         ><FaHome />
         </Link>
        <div className='h-[51%] w-full'>
-          <img onClick={() => setAllVehiclesInAreaPanel(false)} className='h-full w-full object-cover' src="../src/assets/mapDemo.png" alt="map"/>
+          <img onClick={() => setAllVehiclesInAreaPanel(false)} className='h-full w-full object-cover' src="/mapDemo.png" alt="map"/>
        </div>
     
        <div className='h-[49%] p-2'>
@@ -20,7 +20,7 @@ const UserRidingIntoVehicle = () => {
         </div>
 
         <div className='flex items-center justify-between p-1 border-b-1 border-gray-300 mb-2 py-2'>
-            <img className='h-15' src="../src/assets/car.webp" alt="car"/>
+            <img className='h-15' src="/car.webp" alt="car"/>
             <div>
                 <h3 className='font-semibold text-sm'>Rider Name</h3>
                 <h5 className='font-semibold text-md'>ABC-129A</h5>

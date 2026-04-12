@@ -33,7 +33,7 @@ const riderFinishRidePanelRef = useRef(null);
   return (
     <div className='h-screen w-screen'>
        <div className='h-[85%] w-full'>
-          <img onClick={() => setOpenRiderFinishRidePanel(false)} className='h-full w-full object-cover' src="../src/assets/mapDemo.png" alt="map"/>
+          <img onClick={() => setOpenRiderFinishRidePanel(false)} className='h-full w-full object-cover' src="/mapDemo.png" alt="map"/>
        </div>
 
 

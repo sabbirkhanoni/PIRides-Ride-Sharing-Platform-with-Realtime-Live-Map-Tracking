@@ -23,7 +23,7 @@ const VehiclesInThatArea = ({setSelectVehicleType, journeyDetails, setConfirmDet
           }}
           
           className='flex items-center p-2 justify-between border-3  border-gray-400 rounded-lg  hover:bg-blue-50 hover:border-gray-500 active:border-black'>
-            <img className='h-12' src="../src/assets/car.jpeg" alt="car"/>
+            <img className='h-12' src="/car.jpeg" alt="car"/>
             <div className='w-1/2'>
               <h3 className='text-md flex flex-wrap items-center font-medium gap-x-2'>Name<span className='font-bold text-sm'><FaUser/></span>4</h3>
               <h5 className='text-gray-500'>2 min Away</h5>
@@ -40,7 +40,7 @@ const VehiclesInThatArea = ({setSelectVehicleType, journeyDetails, setConfirmDet
             setSelectVehicleType('bike')
           }}
           className='flex items-center p-2 justify-between border-3  border-gray-400 rounded-lg hover:bg-blue-50 hover:border-gray-500 active:border-black'>
-            <img className='h-12 ml-2' src="../src/assets/bike.jpeg" alt="bike"/>
+            <img className='h-12 ml-2' src="/bike.jpeg" alt="bike"/>
             <div className='w-1/2'>
               <h3 className='text-md flex flex-wrap items-center font-medium gap-x-2'>Moto Bike<span className='font-bold text-sm'><FaUser/></span>4</h3>
               <h5 className='text-gray-500'>2 min Away</h5>
@@ -57,7 +57,7 @@ const VehiclesInThatArea = ({setSelectVehicleType, journeyDetails, setConfirmDet
             setSelectVehicleType('auto')
           }}
           className='flex items-center p-2 justify-between border-3  border-gray-400 hover:bg-blue-50 hover:border-gray-500 rounded-lg active:border-black'>
-            <img className='h-12 ml-2' src="../src/assets/auto.jpeg" alt="auto"/>
+            <img className='h-12 ml-2' src="/auto.jpeg" alt="auto"/>
             <div className='w-1/2'>
               <h3 className='text-md flex flex-wrap items-center font-medium gap-x-2'>Cng Auto<span className='font-bold text-sm'><FaUser/></span>4</h3>
               <h5 className='text-gray-500'>2 min Away</h5>

@@ -71,7 +71,7 @@ const UserRegister = () => {
         <div className='text-center'>
           <div className='flex items-center justify-center'>
             <div className='w-20 h-15 bg-white flex items-center rounded-lg justify-center'>
-              <img className='w-full h-full object-contain' src="../src/assets/pirides.png" alt="logo"/>
+              <img className='w-full h-full object-contain' src="/pirides.png" alt="logo"/>
             </div>
           </div>
           <h1 className='text-xl font-semibold text-gray-900 mb-2'>User Registration</h1>

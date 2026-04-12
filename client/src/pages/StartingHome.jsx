@@ -13,7 +13,7 @@ const StartingHome = () => {
       <div className="w-full bg-white shadow-xl">
         <div className='flex justify-between items-center py-5'>
         <div className='ml-5'>
-          <img src="../src/assets/pirides.png" alt="logo" className="h-8 w-15" />
+          <img src="/pirides.png" alt="logo" className="h-8 w-15" />
         </div>
 
         <div className='mr-4'>
@@ -114,7 +114,7 @@ const StartingHome = () => {
           <div>
             <img
             className='object-scale-down h-full w-full'
-            src="../src/assets/safeRides.jpeg" alt="login" />
+            src="/safeRides.jpeg" alt="login" />
           </div>
         </div>
 
@@ -123,7 +123,7 @@ const StartingHome = () => {
           <div>
             <img
             className='object-scale-down h-full w-full'
-            src="../src/assets/secureRides.jpeg" alt="login" />
+            src="/secureRides.jpeg" alt="login" />
           </div>
           <div>
             <h1 className='text-4xl font-bold'>Benefits</h1>
@@ -147,7 +147,7 @@ const StartingHome = () => {
           <div>
             <img
             className='object-scale-down h-full w-full'
-            src="../src/assets/mapSet.jpeg" alt="login" />
+            src="/mapSet.jpeg" alt="login" />
           </div>
         </div>
 
@@ -157,7 +157,7 @@ const StartingHome = () => {
           <div>
             <img
             className='object-scale-down h-full w-full'
-            src="../src/assets/enjoyRides.jpeg" alt="login" />
+            src="/enjoyRides.jpeg" alt="login" />
           </div>
             <div>
             <h1 className='text-4xl font-bold'>Safety</h1>
@@ -175,7 +175,7 @@ const StartingHome = () => {
           <div className='flex justify-between items-center'>
             <div className=''>
               <img
-              src="../src/assets/pirides2.png" alt="Logo"
+              src="/pirides2.png" alt="Logo"
               className='h-8 w-15'
               />
             </div>
