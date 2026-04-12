@@ -46,6 +46,7 @@ const UserHome = () => {
   const [ destinationSuggestions, setDestinationSuggestions ] = useState([])
   const [ activeField, setActiveField ] = useState(null)
   const [journeyDetails, setJourneyDetails] = useState({})
+  const [journey, setJourney] = useState(null);
 
   const panelRef = useRef(null);
   const allVehiclesInAreaPanelRef = useRef(null);
@@ -143,7 +144,9 @@ const UserHome = () => {
 
 
   socket.on('journey-confirmed', journey => {
+    setUserLookingForaRiderVehicleFound(false);
     setUserGotRiderNowWaitingForRiderPickUp(true);
+    setJourney(journey);
   })
 
   const handlePickupChange = async (e) => {
@@ -353,6 +356,9 @@ async function startJourneyNow(){
         <div ref={userWaitingForRiderAcceptanceRef} className='fixed z-10 w-full bg-white px-3 py-5 bottom-0 translate-y-full pt-4'>
           {/* vehicle in that area component */}
           <UserGotRiderNowWaitingForRiderPickUp
+          journey={journey}
+          setUserLookingForaRiderVehicleFound={setUserLookingForaRiderVehicleFound}
+          userGotRiderNowWaitingForRiderPickUp={userGotRiderNowWaitingForRiderPickUp}
           setUserGotRiderNowWaitingForRiderPickUp={setUserGotRiderNowWaitingForRiderPickUp}
           />
         </div>
