@@ -5,8 +5,7 @@ import BlacklistToken from "../utils/blacklistToken.utilsModel.js";
 export const userRegisterController = async(request,response) => {
     try {
         const { fullname, email, password } = request.body;
-
-        const { firstname, lastname } = fullname;
+        const { firstname, lastname } = fullname || {};
 
         if(!firstname || !email || !password) {
             return response.status(400).json({

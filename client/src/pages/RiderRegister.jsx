@@ -35,7 +35,6 @@ const RiderRegister = () => {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     
-    // Handle nested vehicle properties
     if (name.startsWith('vehicle.')) {
       const vehicleField = name.split('.')[1];
       setData((prev) => ({

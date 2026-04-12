@@ -9,8 +9,10 @@ const UserRegister = () => {
 
 
   const [data, setData] = useState({
-    firstname: "",
-    lastname: "",
+    fullname : {
+      firstname: "",
+      lastname: "",
+    },
     email: "",
     password: "",
   });
@@ -21,12 +23,24 @@ const UserRegister = () => {
   const [focusedField, setFocusedField] = useState(null);
 
   const handleOnChange = (e) => {
-    const { name, value } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+      const { name, value } = e.target;
+
+      if (name === "firstname" || name === "lastname") {
+        setData((prev) => ({
+          ...prev,
+          fullname: {
+            ...prev.fullname,
+            [name]: value,
+          },
+        }));
+      } else {
+        setData((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+      }
+    };
+
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
@@ -46,21 +60,24 @@ const UserRegister = () => {
     }
 
     if(response.data.success){
-      toast.success(response.data.message)
+      toast.success(response.data.message);
+      navigate('/user-login');
     }
 
     // After submit, reset the form
     setData({
-        firstname: "",
-        lastname: "",
+        fullname : {
+          firstname: "",
+          lastname: "",
+        },
         email: "",
         password: "",
     });
-    setIsLoading(false);
-
     console.log('response',response)
     } catch (error) {
       AxiosToastError(error)
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,7 +110,7 @@ const UserRegister = () => {
                     onChange={handleOnChange}
                     onFocus={() => setFocusedField('firstname')}
                     onBlur={() => setFocusedField(null)}
-                    value={data.firstname}
+                    value={data.fullname.firstname}
                     required
                     placeholder='Enter your first name'
                     className={`w-full px-4 py-2 bg-blue-100 border-2 rounded-md text-gray-900 placeholder-gray-500 transition-all duration-200 focus:outline-none focus:bg-white ${
@@ -115,7 +132,7 @@ const UserRegister = () => {
                     onChange={handleOnChange}
                     onFocus={() => setFocusedField('lastname')}
                     onBlur={() => setFocusedField(null)}
-                    value={data.lastname}
+                    value={data.fullname.lastname}
                     placeholder='Enter your last name'
                     className={`w-full px-4 py-2 bg-blue-100 border-2 rounded-md text-gray-900 placeholder-gray-500 transition-all duration-200 focus:outline-none focus:bg-white ${
                       focusedField === 'lastname' ? 'border-black shadow-sm' : 'border-gray-200'

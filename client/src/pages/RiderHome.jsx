@@ -149,6 +149,13 @@ const RiderHome = () => {
      try {
         const response = await Axios({
         ...SummaryAPI.confrimJourneyByRider,
+        data: {
+          riderId: rider._id,
+          journeyId: userDetails.journeyId
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
       })
 
       if(response.success){

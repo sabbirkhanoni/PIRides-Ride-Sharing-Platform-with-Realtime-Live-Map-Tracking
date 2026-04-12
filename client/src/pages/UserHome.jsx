@@ -53,9 +53,7 @@ const UserHome = () => {
   const userLookingForaRiderVehicleFoundRef = useRef(null);
   const userWaitingForRiderAcceptanceRef = useRef(null);
 
-  socket.on('journey-confirmed', journey => {
-    setUserGotRiderNowWaitingForRiderPickUp(true);
-  })
+  
 
   {/* location suggestion panel animation */}
   useGSAP(function(){
@@ -142,6 +140,11 @@ const UserHome = () => {
         })
       }
   }, [userGotRiderNowWaitingForRiderPickUp]);
+
+
+  socket.on('journey-confirmed', journey => {
+    setUserGotRiderNowWaitingForRiderPickUp(true);
+  })
 
   const handlePickupChange = async (e) => {
       setPickupDestinationData({ ...pickupDestinationData, origin: e.target.value })
