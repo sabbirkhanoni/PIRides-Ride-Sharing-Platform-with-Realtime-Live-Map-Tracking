@@ -20,31 +20,24 @@ const RiderHome = () => {
   const [riderConfirmUserReqPanel, setRiderConfirmUserReqPanel] = useState(false);
 
   const { rider } = useContext(RiderContextData);
-  //socket io context
   const {socket} = useContext(SocketIOContext);
   const [userDetails, setUserDetails] = useState(null);
   const [socketConnected, setSocketConnected] = useState(false);
 
+  const riderPopUpForUserReqPanelRef = useRef(null);
+  const riderConfirmUserReqPanelRef = useRef(null);
   
-  // First useEffect: Set up socket connection listeners
   useEffect(() => {
     if (!socket) {
-      console.error('❌ Socket not available');
       return;
     }
 
-   
-
-    console.log('🔌 Socket object:', socket);
-    console.log('🔌 Socket connected:', socket.connected);
-
+  
     const handleConnect = () => {
-      console.log('✅ Socket connected!');
       setSocketConnected(true);
     };
 
     const handleDisconnect = () => {
-      console.log('❌ Socket disconnected');
       setSocketConnected(false);
     };
 
@@ -61,20 +54,15 @@ const RiderHome = () => {
     };
   }, [socket]);
 
-  // Second useEffect: Join when rider data and socket are ready
   useEffect(() => {
     if (!socket || !rider._id || !socketConnected) {
-      console.warn('⏳ Waiting for socket and rider data... Socket:', !!socket, 'Rider:', rider._id, 'Connected:', socketConnected);
       return;
     }
-
-    
 
     socket.emit('join', {
       userId: rider._id,
       userType: "rider"
     })
-    console.log('✅ Rider joined with ID:', rider._id);
 
     const updateLocation = () => {
       if(navigator.geolocation){
@@ -91,41 +79,34 @@ const RiderHome = () => {
             });
           },
           error => {
-            console.error('❌ Geolocation error:', error.message);
+            console.error('Geolocation error:', error.message);
           }
         );
       } else {
-        console.error('❌ Geolocation not supported by browser');
+        console.error('Geolocation not supported by browser');
       }
     };
 
     const locationInterval = setInterval(updateLocation, 10000); // Update location every 10 seconds
-    updateLocation(); // Call once immediately
-    
-    return () => clearInterval(locationInterval); // Clean up the interval on component unmount
+    updateLocation();
+    return () => clearInterval(locationInterval);
   }, [rider._id, socket, socketConnected]);
 
-  // Third useEffect: Set up event listeners for new journey requests
   useEffect(() => {
     if (!socket) {
-      console.warn('⏳ Socket not available yet');
       return;
     }
-
-    console.log('🎧 Setting up socket listener for new-journey-request');
-
     const handleNewJourney = (data) => {
-      console.log('🚗 ✓ NEW JOURNEY REQUEST RECEIVED:', data);
       setUserDetails(data);
       setRiderPopUpForUserReqPanel(true);
     };
 
     const handleSocketError = (error) => {
-      console.error('❌ Socket error:', error);
+      console.error('Socket error:', error);
     };
 
     const handleConnect = () => {
-      console.log('✅ Socket reconnected during listener setup');
+      console.log('Socket reconnected during listener setup');
     };
 
     // Register all listeners
@@ -133,11 +114,7 @@ const RiderHome = () => {
     socket.on('error', handleSocketError);
     socket.on('connect', handleConnect);
 
-    // Log that listener is active
-    console.log('✅ Socket listeners registered for: new-journey-request, error, connect');
-
     return () => {
-      console.log('🧹 Cleaning up socket listeners');
       socket.off('new-journey-request', handleNewJourney);
       socket.off('error', handleSocketError);
       socket.off('connect', handleConnect);
@@ -151,28 +128,21 @@ const RiderHome = () => {
         ...SummaryAPI.confrimJourneyByRider,
         data: {
           riderId: rider._id,
-          journeyId: userDetails.journeyId
+          journeyId: userDetails._id
         },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
-
-      if(response.success){
-        toast.success(response.message);
+      if(response.data.success){
+        toast.success(response.data.message);
       }
      } catch (error){
-      console.log(error);
       AxiosToastError(error);
      }
   }
 
- 
-
-  //ref for rider pop up for user request panel
-    const riderPopUpForUserReqPanelRef = useRef(null);
-  //ref for rider confirm user request panel
-    const riderConfirmUserReqPanelRef = useRef(null);
+    
 
   {/* panel suggestion panel animation */}
   useGSAP(function(){
@@ -201,8 +171,6 @@ const RiderHome = () => {
   }
 }, [riderConfirmUserReqPanel]);
   
-//onClick={() => setAllVehiclesInAreaPanel(false)}
-
   return (
     <div className='h-screen w-screen'>
         <div className='top-0 left-0 w-full flex justify-end px-5'>

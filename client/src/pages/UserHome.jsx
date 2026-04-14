@@ -22,12 +22,35 @@ const UserHome = () => {
   const { user } = useContext(UserContextData);
 
   useEffect(() => {
+    if (!socket || !user || !user._id) {
+      return;
+    }
     socket.emit("join", 
       {
         userType: "user",
         userId: user._id
       });
-  }, [user]);
+  }, [user._id, socket]);
+
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+
+    socket.off('journey-confirmed');
+
+    const handleJourneyConfirmed = (journey) => {
+      setUserLookingForaRiderVehicleFound(false);
+      setUserGotRiderNowWaitingForRiderPickUp(true);
+      setJourney(journey);
+    };
+
+    socket.on('journey-confirmed', handleJourneyConfirmed);
+    return () => {
+      socket.off('journey-confirmed', handleJourneyConfirmed);
+    };
+  }, []);
 
   const [pickupDestinationData, setPickupDestinationData] = useState({
     origin: "",
@@ -143,12 +166,6 @@ const UserHome = () => {
   }, [userGotRiderNowWaitingForRiderPickUp]);
 
 
-  socket.on('journey-confirmed', journey => {
-    setUserLookingForaRiderVehicleFound(false);
-    setUserGotRiderNowWaitingForRiderPickUp(true);
-    setJourney(journey);
-  })
-
   const handlePickupChange = async (e) => {
       setPickupDestinationData({ ...pickupDestinationData, origin: e.target.value })
       
@@ -161,11 +178,8 @@ const UserHome = () => {
                       Authorization: `Bearer ${localStorage.getItem('token')}`
                   }
               })
-              console.log('Pickup suggestions response:', response.data);
-              // Extract the data array from the API response
               setPickupSuggestions(response.data.data || [])
           } catch (error) {
-              console.log(error)
               AxiosToastError(error)
           }
       } else {
@@ -177,7 +191,7 @@ const UserHome = () => {
   const handleDestinationChange = async (e) => {
       setPickupDestinationData({ ...pickupDestinationData, destination: e.target.value })
       
-      if (e.target.value.length > 2) { // Only search after 3 characters
+      if (e.target.value.length > 2) { 
           try {
               const response = await Axios({
                   ...SummaryAPI.GetAddressSuggestionsAPI,
@@ -187,7 +201,6 @@ const UserHome = () => {
                   }
               })
               console.log('Destination suggestions response:', response.data);
-              // Extract the data array from the API response
               setDestinationSuggestions(response.data.data || [])
           } catch (error) {
               console.log(error)
@@ -238,12 +251,7 @@ async function startJourneyNow(){
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         });
-        
-        console.log('Journey started:', response.data);
-        // Handle successful response here
-        
     } catch (error) {
-        console.error('Error starting journey:', error);
         AxiosToastError(error);
     }
 }
@@ -340,7 +348,7 @@ async function startJourneyNow(){
 
 
         {/*Looking for Rider*/}
-        <div ref={userLookingForaRiderVehicleFoundRef} className='fixed z-10 w-full bg-white px-3 py-5 bottom-0 translate-y-full pt-4'>
+        <div ref={userLookingForaRiderVehicleFoundRef} className='fixed z-10 w-full bg-white px-3 bottom-0 translate-y-full pt-4'>
           {/* vehicle in that area component */}
           <UserLookingForaRiderToVehicleFoundAndWaitingRiderToAcceptRequest
           origin = {pickupDestinationData.origin}

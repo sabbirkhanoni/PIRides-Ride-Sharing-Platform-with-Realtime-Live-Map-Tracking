@@ -3,7 +3,6 @@ import { getDistanceAndTime } from "./map.services.js";
 import calculateMoneyPayable from "../payment/utils/moneyCalculation.js";
 import generateOTP from "../utils/journeyOTP.js";
 
-
 export const journeyStartService = async (
     {user, origin, destination, vehicleType}) => {
 
@@ -33,20 +32,38 @@ export const confirmJourneyService = async ({journeyId, riderId}) => {
     if(!journeyId || !riderId) {
         throw new Error("Journey ID and Rider ID are required to confirm a journey");
     }
-
-    await riderModel.findOneAndUpdate({ _id: riderId },
-         { 
+    const updateResult = await journeyModel.findByIdAndUpdate(
+        journeyId,
+        { 
             status: "accepted",
             rider: riderId
-          } 
-        );
-    const journey = await journeyModel.findOne({
-        _id: journeyId,
-    }).populate('user');
+        },
+        { new: true }
+    ).populate({
+        path: 'user',
+        select: 'fullname email socketId' 
+    });
 
-    if(!journey) {
-        throw new Error("Journey not found");
+
+    if(!updateResult) {
+        throw new Error(`Journey with ID ${journeyId} not found for update`);
     }
 
-    return journey;
+    console.log('Journey populated with user:', { 
+        journeyId: updateResult._id, 
+        userId: updateResult.user?._id, 
+        userSocketId: updateResult.user?.socketId,
+        status: updateResult.status,
+        rider: updateResult.rider
+    });
+
+    if(!updateResult.user) {
+        throw new Error("Journey user not found or not populated");
+    }
+
+    if(!updateResult.user.socketId) {
+        console.warn('User has no socketId - user may not be connected to socket.io');
+    }
+
+    return updateResult;
 }

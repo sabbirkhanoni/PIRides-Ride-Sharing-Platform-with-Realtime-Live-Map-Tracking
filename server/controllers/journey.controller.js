@@ -1,7 +1,6 @@
 import journeyModel from "../models/journey.model.js";
-import riderModel from "../models/rider.model.js";
 import calculateMoneyPayable from "../payment/utils/moneyCalculation.js";
-import { journeyStartService } from "../services/journey.services.js";
+import { journeyStartService, confirmJourneyService } from "../services/journey.services.js";
 import { getAddressCoordinate, getAllRiderInAreaRadiusService } from "../services/map.services.js";
 import { sendMessageToSocketId } from "../socketio.js";
 
@@ -35,10 +34,7 @@ export const journeyStartController = async(request, response) => {
         });
         
         const pickupCoordinates = await getAddressCoordinate(origin);
-        console.log('📍 Pickup coordinates:', pickupCoordinates);
-        
         const riderInRadius = await getAllRiderInAreaRadiusService(pickupCoordinates.lat, pickupCoordinates.lng, 10); // 10 km radius
-        console.log(`\n🔍 Journey ${journey._id} - Found ${riderInRadius.length} riders in radius\n`);
 
         journey.otp = "";
 
@@ -47,18 +43,13 @@ export const journeyStartController = async(request, response) => {
         // Notify riders in radius about new journey request
         if (riderInRadius && riderInRadius.length > 0) {
             riderInRadius.forEach(rider => {
-                console.log(`📤 Sending journey request to rider ${rider._id} with socketId: ${rider.socketId}`);
                 if (rider.socketId) {
                     sendMessageToSocketId(rider.socketId, {
                         event: 'new-journey-request',
                         data: journeyData
                     });
-                } else {
-                    console.warn(`⚠️  Rider ${rider._id} has no socketId`);
                 }
             });
-        } else {
-            console.warn('⚠️  No riders found in radius to notify');
         }
 
         return response.status(200).json({
@@ -120,27 +111,53 @@ export const getJourneyDetailsController = async (request, response) => {
 export const confirmJourneyByRiderController = async (request,response) => {
     const { journeyId } = request.body;
     try {
-        const journey = await confirmJourneyService(journeyId, request.rider._id);
-
-        sendMessageToSocketId(journey.user.socketId, {
-            event: 'journey-confirmed',
-            data: journey
-        })
-
-        if(journey) {
-            return response.status(200).json({
-                message: 'Journey Confirmed By a Rider',
-                error:false,
-                success: true,
-                data: journey
-            })
+        if(!journeyId) {
+            return response.status(400).json({
+                message: 'Journey ID is required',
+                error: true,
+                success: false
+            });
         }
+        const journey = await confirmJourneyService({journeyId, riderId: request.rider._id});
+
+        if(!journey) {
+            return response.status(400).json({
+                message: 'Journey not found',
+                error: true,
+                success: false
+            });
+        }
+
+        if(!journey.user) {
+            console.warn('⚠️ Journey user not populated');
+            return response.status(400).json({
+                message: 'Journey user details not found',
+                error: true,
+                success: false
+            });
+        }
+
+        if(journey.user.socketId) {
+            sendMessageToSocketId(journey.user.socketId, {
+                event: 'journey-confirmed',
+                data: journey
+            });
+        }
+
+        return response.status(200).json({
+            message: 'Journey Confirmed By a Rider',
+            error:false,
+            success: true,
+            data: journey
+        });
+        
     } catch (error) {
         return response.status(500).json({
             message: 'Internal Server Error',
             error: true,
             success: false,
-        })
+            details: error.message
+        });
     }
 }
 
