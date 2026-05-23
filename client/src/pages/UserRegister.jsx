@@ -98,8 +98,8 @@ const UserRegister = () => {
         <div className='bg-white rounded-3xl p-5'>
           <div className='space-y-5'>
             {/*First Name field */}
-            <form onSubmit={handleOnSubmit}>
-              <div className='space-y-2'>
+            <form onSubmit={handleOnSubmit} className='space-y-3'>
+              <div className='space-y-5'>
                 <label className='text-sm font-medium text-gray-700' htmlFor='firstName'>
                   First Name
                 </label>
@@ -189,7 +189,7 @@ const UserRegister = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className='w-full bg-blue-500 text-white py-2 px-6 font-medium rounded-full transition-all hover:bg-blue-600'
+                className='w-full my-4 bg-blue-500 text-white py-2 px-6 font-medium rounded-full transition-all hover:bg-blue-600'
               >
                 {isLoading ? (
                   <div className='flex items-center justify-center space-x-2'>
